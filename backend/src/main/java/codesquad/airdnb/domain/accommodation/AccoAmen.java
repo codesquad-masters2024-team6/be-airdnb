@@ -4,6 +4,7 @@ package codesquad.airdnb.domain.accommodation;
 import jakarta.persistence.*;
 
 @Entity
+@Table(name = "ACCO_AMEN")
 public class AccoAmen {
 
     @Id
