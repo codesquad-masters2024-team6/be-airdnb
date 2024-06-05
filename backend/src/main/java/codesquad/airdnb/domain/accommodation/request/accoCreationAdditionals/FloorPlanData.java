@@ -1,7 +1,9 @@
 package codesquad.airdnb.domain.accommodation.request.accoCreationAdditionals;
 
 import codesquad.airdnb.domain.accommodation.embedded.FloorPlan;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,20 +14,24 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class FloorPlanData {
 
-    @NotBlank
-    @Size(min = 1)
+    @NotNull
+    @Min(value = 1)
     private Integer maxGuest;
 
-    @NotBlank
+    @NotNull
+    @Min(value = 0)
     private Integer maxInfant;
 
-    @NotBlank
+    @NotNull
+    @Min(value = 0)
     private Integer bedroomNum;
 
-    @NotBlank
+    @NotNull
+    @Min(value = 0)
     private Integer bedNum;
 
-    @NotBlank
+    @NotNull
+    @Min(value = 0)
     private Integer bathroomNum;
 
     public FloorPlan toEmbedded() {

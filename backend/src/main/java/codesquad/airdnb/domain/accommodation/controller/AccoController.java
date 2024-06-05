@@ -1,6 +1,8 @@
-package codesquad.airdnb.domain.accommodation;
+package codesquad.airdnb.domain.accommodation.controller;
 
 import codesquad.airdnb.domain.accommodation.request.AccoCreateRequest;
+import codesquad.airdnb.domain.accommodation.response.AccoContentResponse;
+import codesquad.airdnb.domain.accommodation.service.AccoService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -18,10 +20,8 @@ public class AccoController {
     private final AccoService accoService;
 
     @PostMapping
-    public ResponseEntity<?> create(@Valid @RequestBody AccoCreateRequest accoCreateRequest) {
-
-
-        return ResponseEntity.ok(accoCreateRequest);
+    public ResponseEntity<AccoContentResponse> create(@Valid @RequestBody AccoCreateRequest request) {
+        AccoContentResponse response = accoService.create(request);
+        return ResponseEntity.ok(response);
     }
-
 }

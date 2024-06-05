@@ -1,4 +1,4 @@
-package codesquad.airdnb.domain.accommodation;
+package codesquad.airdnb.domain.accommodation.entity;
 
 
 import jakarta.persistence.*;

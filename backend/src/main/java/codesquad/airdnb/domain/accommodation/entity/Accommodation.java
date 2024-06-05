@@ -1,4 +1,4 @@
-package codesquad.airdnb.domain.accommodation;
+package codesquad.airdnb.domain.accommodation.entity;
 
 import codesquad.airdnb.domain.accommodation.embedded.FloorPlan;
 import codesquad.airdnb.domain.accommodation.embedded.Location;
@@ -10,6 +10,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.sql.Time;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter

@@ -1,11 +1,13 @@
 package codesquad.airdnb.domain.accommodation.request;
 
-import codesquad.airdnb.domain.accommodation.Accommodation;
+import codesquad.airdnb.domain.accommodation.entity.AccoImage;
+import codesquad.airdnb.domain.accommodation.entity.Accommodation;
 import codesquad.airdnb.domain.accommodation.request.accoCreationAdditionals.FloorPlanData;
 import codesquad.airdnb.domain.accommodation.request.accoCreationAdditionals.LocationData;
 import codesquad.airdnb.domain.member.Member;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -19,7 +21,7 @@ import java.util.List;
 @AllArgsConstructor
 public class AccoCreateRequest {
 
-    @NotBlank
+    @NotNull
     private Long hostId;
 
     @NotBlank
@@ -29,16 +31,16 @@ public class AccoCreateRequest {
     @NotBlank
     private String placeCategory;
 
-    @NotBlank
+    @NotNull
     private Long price;
 
     @Size(max = 500)
     private String description;
 
-    @NotBlank
+    @NotNull
     private Time checkInTime;
 
-    @NotBlank
+    @NotNull
     private Time checkOutTime;
 
     @Valid
@@ -54,8 +56,7 @@ public class AccoCreateRequest {
         return imageUrls.stream().noneMatch(String::isBlank);
     }
 
-    // TODO: Image는? 그러면 toEntity가 두 개??
-    public Accommodation toEntity(Member host) {
+    public Accommodation buildAccommodation(Member host) {
         return Accommodation.builder()
                 .host(host)
                 .title(title)
@@ -67,5 +68,15 @@ public class AccoCreateRequest {
                 .floorPlan(floorPlanData.toEmbedded())
                 .location(locationData.toEmbedded())
                 .build();
+    }
+
+    public List<AccoImage> buildAccoImages(Accommodation accommodation) {
+        return imageUrls.stream()
+                .map(url -> AccoImage.builder()
+                                .url(url)
+                                .accommodation(accommodation)
+                                .build()
+                ).toList();
+
     }
 }
