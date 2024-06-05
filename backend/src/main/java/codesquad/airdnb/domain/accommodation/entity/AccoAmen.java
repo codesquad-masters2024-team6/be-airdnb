@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Entity
 @Getter
 @Builder
@@ -26,4 +28,13 @@ public class AccoAmen {
     @ManyToOne
     @JoinColumn(name = "AMEN_ID")
     private Amenity amenity;
+
+    public static List<AccoAmen> of(Accommodation accommodation, List<Amenity> amenities) {
+        return amenities.stream()
+                .map(amenity -> AccoAmen.builder()
+                        .accommodation(accommodation)
+                        .amenity(amenity)
+                        .build())
+                .toList();
+    }
 }

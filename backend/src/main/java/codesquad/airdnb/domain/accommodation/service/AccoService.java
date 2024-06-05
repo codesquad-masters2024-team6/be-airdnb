@@ -36,17 +36,12 @@ public class AccoService {
         Accommodation accommodation = request.buildAccommodation(host);
 
         List<Amenity> amenities = amenityRepository.findAllById(request.getAmenities());
-        List<AccoAmen> accoAmens = amenities.stream()
-                .map(amenity -> AccoAmen.builder()
-                        .amenity(amenity)
-                        .accommodation(accommodation)
-                        .build()
-                ).toList();
+        List<AccoAmen> accoAmens = AccoAmen.of(accommodation, amenities);
         accommodation.addAmenities(accoAmens);
+        List<AccoImage> accoImages = request.buildAccoImages(accommodation);
+        accommodation.addImages(accoImages);
 
         Accommodation savedAcco = accoRepository.save(accommodation);
-        List<AccoImage> accoImages = request.buildAccoImages(savedAcco);
-        accoImageRepository.saveAll(accoImages);
         return AccoContentResponse.of(savedAcco, accoImages);
     }
 }

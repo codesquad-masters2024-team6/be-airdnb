@@ -48,9 +48,18 @@ public class Accommodation {
     private Location location = new Location();
 
     @OneToMany(mappedBy = "accommodation", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<AccoImage> images = new ArrayList<>();
+
+    @OneToMany(mappedBy = "accommodation", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<AccoAmen> amenities = new ArrayList<>();
 
     public void addAmenities(List<AccoAmen> amenities) {
         this.amenities = amenities;
     }
+
+    public void addImages(List<AccoImage> images) {
+        this.images = images;
+    }
 }
+
+
