@@ -1,6 +1,5 @@
-package codesquad.airdnb.domain.accommodation.embedded;
+package codesquad.airdnb.domain.accommodation.entity.embedded;
 
-import codesquad.airdnb.domain.accommodation.response.accoCreateAdditionals.FloorPlanData;
 import jakarta.persistence.Embeddable;
 import lombok.*;
 

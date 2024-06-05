@@ -1,15 +1,15 @@
-package codesquad.airdnb.domain.accommodation.request.accoCreationAdditionals;
+package codesquad.airdnb.domain.accommodation.dto.additionals;
 
-import codesquad.airdnb.domain.accommodation.embedded.FloorPlan;
+import codesquad.airdnb.domain.accommodation.entity.embedded.FloorPlan;
 import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class FloorPlanData {
@@ -41,6 +41,16 @@ public class FloorPlanData {
                 .bedroomNum(bedroomNum)
                 .bedNum(bedNum)
                 .bathroomNum(bathroomNum)
+                .build();
+    }
+
+    public static FloorPlanData toResponseEmbedded(FloorPlan floorPlan) {
+        return FloorPlanData.builder()
+                .maxGuest(floorPlan.getMaxGuest())
+                .maxInfant(floorPlan.getMaxInfant())
+                .bedroomNum(floorPlan.getBedroomNum())
+                .bedNum(floorPlan.getBedNum())
+                .bathroomNum(floorPlan.getBathroomNum())
                 .build();
     }
 }

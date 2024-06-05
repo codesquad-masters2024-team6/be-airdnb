@@ -1,8 +1,9 @@
-package codesquad.airdnb.domain.accommodation.request.accoCreationAdditionals;
+package codesquad.airdnb.domain.accommodation.dto.additionals;
 
-import codesquad.airdnb.domain.accommodation.embedded.Location;
+import codesquad.airdnb.domain.accommodation.entity.embedded.Location;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.locationtech.jts.geom.Coordinate;
@@ -12,18 +13,18 @@ import org.locationtech.jts.geom.Point;
 import static codesquad.airdnb.env.Constants.SRID;
 
 @Getter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class LocationData {
 
     @NotBlank
+    @Size(min = 2, max = 2)
     private String country;
 
     @NotBlank
     private String province;
 
-    @Min(value = 2)
-    @Max(value = 2)
     private String city;
 
     @NotBlank
@@ -34,7 +35,7 @@ public class LocationData {
 
     private String streetAddressDetail;
 
-    private Long postalCode;
+    private String postalCode;
 
     @NotNull
     @Min(value = -90)
@@ -63,6 +64,20 @@ public class LocationData {
                 .streetAddressDetail(streetAddressDetail)
                 .postalCode(postalCode)
                 .coordinate(createPoint(coordinateX, coordinateY))
+                .build();
+    }
+
+    public static LocationData toResponseEmbedded(Location location) {
+        return LocationData.builder()
+                .country(location.getCountry())
+                .province(location.getProvince())
+                .city(location.getCity())
+                .district(location.getDistrict())
+                .streetAddress(location.getStreetAddress())
+                .streetAddressDetail(location.getStreetAddressDetail())
+                .postalCode(location.getPostalCode())
+                .coordinateX(location.getCoordinate().getX())
+                .coordinateY(location.getCoordinate().getY())
                 .build();
     }
 }

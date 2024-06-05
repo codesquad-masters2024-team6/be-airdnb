@@ -1,9 +1,9 @@
-package codesquad.airdnb.domain.accommodation.response;
+package codesquad.airdnb.domain.accommodation.dto.response;
 
 import codesquad.airdnb.domain.accommodation.entity.AccoImage;
 import codesquad.airdnb.domain.accommodation.entity.Accommodation;
-import codesquad.airdnb.domain.accommodation.response.accoCreateAdditionals.FloorPlanData;
-import codesquad.airdnb.domain.accommodation.response.accoCreateAdditionals.LocationData;
+import codesquad.airdnb.domain.accommodation.dto.additionals.LocationData;
+import codesquad.airdnb.domain.accommodation.dto.additionals.FloorPlanData;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -46,8 +46,8 @@ public class AccoContentResponse {
                 .description(accommodation.getDescription())
                 .checkInTime(accommodation.getCheckInTime())
                 .checkOutTime(accommodation.getCheckOutTime())
-                .locationData(LocationData.of(accommodation.getLocation()))
-                .floorPlanData(FloorPlanData.of(accommodation.getFloorPlan()))
+                .locationData(LocationData.toResponseEmbedded(accommodation.getLocation()))
+                .floorPlanData(FloorPlanData.toResponseEmbedded(accommodation.getFloorPlan()))
                 .imageUrls(accoImages.stream().map(AccoImage::getUrl).toList())
                 .build();
     }

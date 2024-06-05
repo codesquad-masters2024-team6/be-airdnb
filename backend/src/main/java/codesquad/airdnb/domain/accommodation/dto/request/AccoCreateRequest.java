@@ -2,8 +2,8 @@ package codesquad.airdnb.domain.accommodation.request;
 
 import codesquad.airdnb.domain.accommodation.entity.AccoImage;
 import codesquad.airdnb.domain.accommodation.entity.Accommodation;
-import codesquad.airdnb.domain.accommodation.request.accoCreationAdditionals.FloorPlanData;
-import codesquad.airdnb.domain.accommodation.request.accoCreationAdditionals.LocationData;
+import codesquad.airdnb.domain.accommodation.dto.additionals.FloorPlanData;
+import codesquad.airdnb.domain.accommodation.dto.additionals.LocationData;
 import codesquad.airdnb.domain.member.Member;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
@@ -51,6 +51,8 @@ public class AccoCreateRequest {
 
     @Size(min = 5)
     private List<String> imageUrls;
+
+    private List<Long> amenities;
 
     public boolean validateImageUrls() {
         return imageUrls.stream().noneMatch(String::isBlank);

@@ -1,4 +1,4 @@
-package codesquad.airdnb.domain.accommodation.embedded;
+package codesquad.airdnb.domain.accommodation.entity.embedded;
 
 import jakarta.persistence.Embeddable;
 import lombok.AllArgsConstructor;
@@ -26,7 +26,7 @@ public class Location {
 
     private String streetAddressDetail;
 
-    private Long postalCode;
+    private String postalCode;
 
     private Point coordinate;
 }
