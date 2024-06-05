@@ -31,7 +31,7 @@ public class Accommodation {
 
     private String placeCategory;
 
-    private Integer price;
+    private Long price;
 
     private String description;
 

@@ -1,16 +1,14 @@
 package codesquad.airdnb.domain.accommodation.embedded;
 
 import jakarta.persistence.Embeddable;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Embeddable
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class FloorPlan {
 
     private Integer maxGuest;
