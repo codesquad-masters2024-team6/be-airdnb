@@ -1,5 +1,7 @@
 package codesquad.airdnb.domain.accommodation.service;
 
+import codesquad.airdnb.domain.accommodation.controller.AccoListResponse;
+import codesquad.airdnb.domain.accommodation.controller.SimpleAccommodation;
 import codesquad.airdnb.domain.accommodation.entity.AccoAmen;
 import codesquad.airdnb.domain.accommodation.entity.AccoImage;
 import codesquad.airdnb.domain.accommodation.entity.Accommodation;
@@ -51,5 +53,11 @@ public class AccoService {
                 .orElseThrow(() -> new NoSuchElementException("해당 ID를 갖는 숙소가 없습니다."));
 
         return AccoContentResponse.of(accommodation);
+    }
+
+    public AccoListResponse getList(Long hostId) {
+        List<Accommodation> accommodations = accoRepository.findAllByHostId(hostId);
+
+        return AccoListResponse.of(accommodations);
     }
 }
