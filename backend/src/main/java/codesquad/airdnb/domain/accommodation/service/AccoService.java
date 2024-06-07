@@ -1,5 +1,7 @@
 package codesquad.airdnb.domain.accommodation.service;
 
+import codesquad.airdnb.domain.accommodation.controller.AccoListData;
+import codesquad.airdnb.domain.accommodation.controller.AccoListResponse;
 import codesquad.airdnb.domain.accommodation.entity.AccoAmen;
 import codesquad.airdnb.domain.accommodation.entity.AccoImage;
 import codesquad.airdnb.domain.accommodation.entity.Accommodation;
@@ -43,5 +45,11 @@ public class AccoService {
 
         Accommodation savedAcco = accoRepository.save(accommodation);
         return AccoContentResponse.of(savedAcco, accoImages);
+    }
+
+    public AccoListResponse getList() {
+        List<AccoListData> accoList = accoRepository.findAllBy();
+        return AccoListResponse.builder()
+                            .accommodationList(accoList).build();
     }
 }
