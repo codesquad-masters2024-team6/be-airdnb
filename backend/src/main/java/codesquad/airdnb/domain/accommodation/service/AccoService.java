@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -42,6 +43,13 @@ public class AccoService {
         accommodation.addImages(accoImages);
 
         Accommodation savedAcco = accoRepository.save(accommodation);
-        return AccoContentResponse.of(savedAcco, accoImages);
+        return AccoContentResponse.of(savedAcco);
+    }
+
+    public AccoContentResponse get(Long accoId) {
+        Accommodation accommodation = accoRepository.findById(accoId)
+                .orElseThrow(() -> new NoSuchElementException("해당 ID를 갖는 숙소가 없습니다."));
+
+        return AccoContentResponse.of(accommodation);
     }
 }
