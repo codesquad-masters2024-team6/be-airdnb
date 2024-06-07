@@ -27,7 +27,7 @@ public class FloorPlanData {
     private Integer bedroomNum;
 
     @NotNull
-    @Min(value = 0)
+    @Min(value = 1)
     private Integer bedNum;
 
     @NotNull
