@@ -20,8 +20,9 @@ public class AccoController {
         return ResponseEntity.ok(accoService.create(request));
     }
 
+    // TODO: 이후 로그인이 구현되면 토큰 등으로 로그인한 사용자의 정보를 전달받아 해당 사용자의 숙소만 뽑아내도록 변경
     @GetMapping
-    public ResponseEntity<AccoListResponse> getList() {
-        return ResponseEntity.ok(accoService.getList());
+    public ResponseEntity<AccoListResponse> getList(@RequestParam Long hostId) {
+        return ResponseEntity.ok(accoService.getList(hostId));
     }
 }

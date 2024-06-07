@@ -1,13 +1,19 @@
 package codesquad.airdnb.domain.accommodation.controller;
 
-import lombok.Builder;
+import codesquad.airdnb.domain.accommodation.entity.Accommodation;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.util.List;
 
 @Getter
-@Builder
+@AllArgsConstructor
 public class AccoListResponse {
 
-    private List<AccoListData> accommodationList;
+    private List<SimpleAccommodation> accommodationList;
+
+    public static AccoListResponse of(List<Accommodation> accommodations) {
+        List<SimpleAccommodation> simpleAccoList = accommodations.stream().map(SimpleAccommodation::of).toList();
+        return new AccoListResponse(simpleAccoList);
+    }
 }
