@@ -5,5 +5,7 @@
 </script>
 
 <HostingHeader />
-<slot/>
+<div class="flex-grow">
+    <slot/>
+</div>
 <HostingFooter />

@@ -5,9 +5,12 @@
     import {urlPrefix} from "../Constants.js";
 </script>
 
-<QuestionSection title="Q6. 숙소 상세 주소를 확인해주세요">
+<QuestionSection title="Q6. 숙소 상세 주소를 확인해주세요"
+                 description="주소는 게스트의 예약이 확정된 이후에 공개됩니다.">
     <LocationForm />
 </QuestionSection>
+
+<div class="flex-grow"></div>
 
 <div class="flex mt-5 w-[75%] justify-between">
     <RoutingBtn targetUrl="{urlPrefix}/coordinate" btnText="이전"/>

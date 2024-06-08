@@ -11,8 +11,8 @@
     let name = 'filepond';
 </script>
 
-<QuestionSection title="Q9. 사진 추가하기">
-    <span class="mb-4">마지막으로 숙소의 사진을 추가해주세요(최소 5장)</span>
+<QuestionSection title="Q9. 사진 추가하기"
+                 description="마지막으로 숙소의 사진을 추가해주세요 (최소 5장)">
     <div class="w-[1000px] aspect-video mt-7">
         <FilePond
                 bind:this={pond}
@@ -21,6 +21,8 @@
         />
     </div>
 </QuestionSection>
+
+<div class="flex-grow"></div>
 
 <div class="flex mt-5 w-[75%] justify-between">
     <RoutingBtn targetUrl="{urlPrefix}/amenities" btnText="이전"/>

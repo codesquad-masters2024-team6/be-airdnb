@@ -27,9 +27,8 @@
     }
 </script>
 
-<QuestionSection title="Q8. 숙소 편의시설 정보를 추가하세요">
-    <span>여기에 추가하려는 편의시설이 보이지 않더라도 걱정하지 마세요!</span>
-    <span>숙소를 등록한 후에 편의시설을 추가할 수 있습니다.</span>
+<QuestionSection title="Q8. 숙소 편의시설 정보를 추가하세요"
+                 description="여기에 추가하려는 편의시설이 보이지 않더라도 걱정하지 마세요! 숙소를 등록한 후에 편의시설을 추가할 수 있습니다.">
     <div class="grid grid-cols-3 gap-4 justify-center pt-5 w-[1440px]">
         {#each amenities as amenity}
             <Card
@@ -41,6 +40,8 @@
         {/each}
     </div>
 </QuestionSection>
+
+<div class="flex-grow"></div>
 
 <div class="flex mt-5 w-[75%] justify-between">
     <RoutingBtn targetUrl="{urlPrefix}/floorPlan" btnText="이전"/>

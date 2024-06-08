@@ -35,12 +35,14 @@
     })
 </script>
 
-<QuestionSection title="Q5. 숙소 위치를 입력해주세요">
-    <div class="flex flex-col justify-center items-center">
-        <div id="map" class="w-[500px] h-[400px]"></div>
+<QuestionSection title="Q5. 숙소 위치를 입력해주세요" description="">
+    <div class="w-full aspect-video">
+        <div id="map" class="w-full h-full"></div>
         <div id="clickLatlng" class="mt-4"></div>
     </div>
 </QuestionSection>
+
+<div class="flex-grow"></div>
 
 <div class="flex mt-5 w-[75%] justify-between">
     <RoutingBtn targetUrl="{urlPrefix}/placeCategory" btnText="이전"/>
