@@ -35,10 +35,10 @@ public class AccoService {
 
     @Transactional
     public AccoContentResponse create(@Valid AccoCreateRequest request) {
-        Member host = memberRepository.findById(request.getHostId()).orElseThrow(NoSuchElementException::new);
+        Member host = memberRepository.findById(request.hostId()).orElseThrow(NoSuchElementException::new);
         Accommodation accommodation = request.buildAccommodation(host);
 
-        List<Amenity> amenities = amenityRepository.findAllById(request.getAmenities());
+        List<Amenity> amenities = amenityRepository.findAllById(request.amenities());
         List<AccoAmen> accoAmens = AccoAmen.of(accommodation, amenities);
         accommodation.addAmenities(accoAmens);
         List<AccoImage> accoImages = request.buildAccoImages(accommodation);

@@ -59,7 +59,7 @@ class AccoControllerTest {
             .hostId(1L)
             .title("test")
             .placeCategory("house")
-            .price(1000L)
+            .basePricePerNight(1000L)
             .description("test description")
             .checkInTime(Time.valueOf("16:00:00"))
             .checkOutTime(Time.valueOf("11:00:00"))

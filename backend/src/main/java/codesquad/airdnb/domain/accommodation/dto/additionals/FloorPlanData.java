@@ -8,32 +8,28 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Getter
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class FloorPlanData {
+public record FloorPlanData (
+        @NotNull
+        @Min(value = 1)
+        Integer maxGuestCount,
 
-    @NotNull
-    @Min(value = 1)
-    private Integer maxGuestCount;
+        @NotNull
+        @Min(value = 0)
+        Integer maxInfantCount,
 
-    @NotNull
-    @Min(value = 0)
-    private Integer maxInfantCount;
+        @NotNull
+        @Min(value = 0)
+        Integer bedroomCount,
 
-    @NotNull
-    @Min(value = 0)
-    private Integer bedroomCount;
+        @NotNull
+        @Min(value = 1)
+        Integer bedCount,
 
-    @NotNull
-    @Min(value = 1)
-    private Integer bedCount;
-
-    @NotNull
-    @Min(value = 0)
-    private Integer bathroomCount;
-
+        @NotNull
+        @Min(value = 0)
+        Integer bathroomCount
+) {
     public FloorPlan toEmbedded() {
         return FloorPlan.builder()
                 .maxGuestCount(maxGuestCount)
