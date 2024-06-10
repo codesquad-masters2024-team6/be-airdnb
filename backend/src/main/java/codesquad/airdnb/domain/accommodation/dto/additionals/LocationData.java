@@ -2,10 +2,7 @@ package codesquad.airdnb.domain.accommodation.dto.additionals;
 
 import codesquad.airdnb.domain.accommodation.entity.embedded.Location;
 import jakarta.validation.constraints.*;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;

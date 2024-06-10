@@ -6,13 +6,16 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+import java.util.Date;
+
 @Entity
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "ACCO_IMAGE")
-public class AccoImage {
+@Table(name = "ACCO_PRODUCT")
+public class AccoProduct {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,5 +25,14 @@ public class AccoImage {
     @JoinColumn(name = "ACCO_ID")
     private Accommodation accommodation;
 
-    private String url;
+    private Date reserveDate;
+
+    private Long price;
+
+    @Column(name = "IS_RESERVED")
+    private boolean isReserved;
+
+    private LocalDateTime createdAt;
+
+    private LocalDateTime modifiedAt;
 }
