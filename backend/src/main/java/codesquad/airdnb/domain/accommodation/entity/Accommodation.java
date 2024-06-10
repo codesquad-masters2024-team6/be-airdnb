@@ -33,7 +33,7 @@ public class Accommodation {
 
     private String placeCategory;
 
-    private Long price;
+    private Long basePricePerNight;
 
     private String description;
 

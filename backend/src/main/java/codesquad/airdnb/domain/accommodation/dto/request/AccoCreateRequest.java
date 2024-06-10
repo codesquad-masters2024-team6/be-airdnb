@@ -32,7 +32,7 @@ public class AccoCreateRequest {
     private String placeCategory;
 
     @NotNull
-    private Long price;
+    private Long basePricePerNight;
 
     @Size(max = 500)
     private String description;
@@ -63,7 +63,7 @@ public class AccoCreateRequest {
                 .host(host)
                 .title(title)
                 .placeCategory(placeCategory)
-                .price(price)
+                .basePricePerNight(basePricePerNight)
                 .description(description)
                 .checkInTime(checkInTime)
                 .checkOutTime(checkOutTime)

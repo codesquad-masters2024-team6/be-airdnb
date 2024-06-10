@@ -22,7 +22,7 @@ public class AccoContentResponse {
 
     private String placeCategory;
 
-    private Long price;
+    private Long basePricePerNight;
 
     private String description;
 
@@ -44,7 +44,7 @@ public class AccoContentResponse {
                 .hostId(accommodation.getHost().getId())
                 .title(accommodation.getTitle())
                 .placeCategory(accommodation.getPlaceCategory())
-                .price(accommodation.getPrice())
+                .basePricePerNight(accommodation.getBasePricePerNight())
                 .description(accommodation.getDescription())
                 .checkInTime(accommodation.getCheckInTime())
                 .checkOutTime(accommodation.getCheckOutTime())

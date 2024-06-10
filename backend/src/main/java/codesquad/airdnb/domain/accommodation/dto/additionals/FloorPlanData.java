@@ -16,41 +16,41 @@ public class FloorPlanData {
 
     @NotNull
     @Min(value = 1)
-    private Integer maxGuest;
+    private Integer maxGuestCount;
 
     @NotNull
     @Min(value = 0)
-    private Integer maxInfant;
+    private Integer maxInfantCount;
 
     @NotNull
     @Min(value = 0)
-    private Integer bedroomNum;
+    private Integer bedroomCount;
 
     @NotNull
     @Min(value = 1)
-    private Integer bedNum;
+    private Integer bedCount;
 
     @NotNull
     @Min(value = 0)
-    private Integer bathroomNum;
+    private Integer bathroomCount;
 
     public FloorPlan toEmbedded() {
         return FloorPlan.builder()
-                .maxGuest(maxGuest)
-                .maxInfant(maxInfant)
-                .bedroomNum(bedroomNum)
-                .bedNum(bedNum)
-                .bathroomNum(bathroomNum)
+                .maxGuestCount(maxGuestCount)
+                .maxInfantCount(maxInfantCount)
+                .bedroomCount(bedroomCount)
+                .bedCount(bedCount)
+                .bathroomCount(bathroomCount)
                 .build();
     }
 
     public static FloorPlanData toResponseEmbedded(FloorPlan floorPlan) {
         return FloorPlanData.builder()
-                .maxGuest(floorPlan.getMaxGuest())
-                .maxInfant(floorPlan.getMaxInfant())
-                .bedroomNum(floorPlan.getBedroomNum())
-                .bedNum(floorPlan.getBedNum())
-                .bathroomNum(floorPlan.getBathroomNum())
+                .maxGuestCount(floorPlan.getMaxGuestCount())
+                .maxInfantCount(floorPlan.getMaxInfantCount())
+                .bedroomCount(floorPlan.getBedroomCount())
+                .bedCount(floorPlan.getBedCount())
+                .bathroomCount(floorPlan.getBathroomCount())
                 .build();
     }
 }
