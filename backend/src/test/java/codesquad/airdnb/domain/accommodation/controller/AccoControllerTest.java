@@ -26,7 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.sql.Time;
 import java.util.List;
 
-@WebMvcTest(AccoController.class)
+@WebMvcTest(HostAccoController.class)
 class AccoControllerTest {
 
     @Autowired
