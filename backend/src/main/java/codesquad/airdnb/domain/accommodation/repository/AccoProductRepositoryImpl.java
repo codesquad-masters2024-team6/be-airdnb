@@ -5,6 +5,7 @@ import codesquad.airdnb.domain.accommodation.entity.QAccoProduct;
 import codesquad.airdnb.domain.accommodation.entity.QAccommodation;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -20,19 +21,21 @@ public class AccoProductRepositoryImpl implements AccoProductRepositoryCustom {
 
     private final JPAQueryFactory queryFactory;
 
-    @Query(value = "CALL createYearlyProduct(:accoId, :price)", nativeQuery = true)
-    @Modifying
-    @Transactional
+    private final EntityManager entityManager;
     @Override
+    @Transactional
     public void createYearlyProduct(Long accoId, Long price) {
-    };
-
-    @Query(value = "CALL createNextProductForAllAcco()", nativeQuery = true)
-    @Modifying
-    @Transactional
+        entityManager.createNativeQuery("CALL createYearlyProduct(:accoId, :price)")
+           .setParameter("accoId", accoId)
+                .setParameter("price", price)
+                .executeUpdate();
+    }
     @Override
+    @Transactional
     public void createNextProductForAllAcco() {
-    };
+        entityManager.createNativeQuery("CALL createNextProductForAllAcco()")
+                .executeUpdate();
+    }
 
 
     @Override
