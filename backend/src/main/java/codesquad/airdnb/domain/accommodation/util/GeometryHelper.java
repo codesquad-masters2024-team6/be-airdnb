@@ -4,7 +4,7 @@ import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
 
-import static codesquad.airdnb.env.Constants.SRID;
+import static codesquad.airdnb.global.env.Constants.SRID;
 
 public class GeometryHelper {
     public static Point createPoint(Double coordinateX, Double coordinateY) {
