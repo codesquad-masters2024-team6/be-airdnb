@@ -11,11 +11,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-
 import java.time.LocalDate;
 import java.util.List;
-
-import static java.sql.Timestamp.valueOf;
 
 @Repository
 @RequiredArgsConstructor
@@ -57,9 +54,7 @@ public class AccoProductRepositoryImpl implements AccoProductRepositoryCustom {
                 .from(qAccoProduct)
                 .join(qAccoProduct.accommodation, qAccommodation)
                 .where(qAccoProduct.accommodation.id.in(accoIds)
-                        .and(qAccoProduct.reserveDate.between(
-                                valueOf(checkInDate.atStartOfDay()), valueOf(checkOutDate.atStartOfDay()))
-                        )
+                        .and(qAccoProduct.reserveDate.between(checkInDate, checkOutDate))
                         .and(qAccoProduct.isReserved.isFalse()))
                 .groupBy(
                         qAccommodation.id,
