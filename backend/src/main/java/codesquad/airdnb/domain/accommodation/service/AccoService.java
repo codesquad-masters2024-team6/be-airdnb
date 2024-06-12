@@ -1,16 +1,11 @@
 package codesquad.airdnb.domain.accommodation.service;
 
 import codesquad.airdnb.domain.accommodation.dto.request.AccoCreateRequest;
+import codesquad.airdnb.domain.accommodation.dto.request.AccoReservationRequest;
 import codesquad.airdnb.domain.accommodation.dto.response.AccoContentResponse;
 import codesquad.airdnb.domain.accommodation.dto.response.AccoListResponse;
-import codesquad.airdnb.domain.accommodation.entity.AccoAmen;
-import codesquad.airdnb.domain.accommodation.entity.AccoImage;
-import codesquad.airdnb.domain.accommodation.entity.Accommodation;
-import codesquad.airdnb.domain.accommodation.entity.Amenity;
-import codesquad.airdnb.domain.accommodation.repository.AccoImageRepository;
-import codesquad.airdnb.domain.accommodation.repository.AccoProductRepository;
-import codesquad.airdnb.domain.accommodation.repository.AccoRepository;
-import codesquad.airdnb.domain.accommodation.repository.AmenityRepository;
+import codesquad.airdnb.domain.accommodation.entity.*;
+import codesquad.airdnb.domain.accommodation.repository.*;
 import codesquad.airdnb.domain.member.Member;
 import codesquad.airdnb.domain.member.MemberRepository;
 import jakarta.validation.Valid;
@@ -35,6 +30,10 @@ public class AccoService {
     private final MemberRepository memberRepository;
 
     private final AccoProductRepository accoProductRepository;
+
+    private final ReservationRepository reservationRepositry;
+
+    private final ReservationProductRepository reservationProductRepository;
 
     @Transactional
     public AccoContentResponse create(@Valid AccoCreateRequest request) {
@@ -79,4 +78,64 @@ public class AccoService {
         accoProductRepository.createNextProductForAllAcco();
     }
     // **************** Scheduled_END ****************
+
+    @Transactional
+    public void reservation(@Valid AccoReservationRequest request, Long memberId) {
+
+        List<AccoProduct> accoProducts = accoProductRepository.findAllById(request.products());
+        reservationRequestValidate(request, accoProducts);
+
+        Long finalPrice = accoProducts.stream()
+                .map(AccoProduct::getPrice)
+                .reduce(Long::sum)
+                .orElseThrow(() -> new NoSuchElementException("해당하는 숙소상품이 존재하지 않습니다."));
+
+        Reservation reservation = Reservation.builder()
+                .member(memberRepository.findById(memberId)
+                        .orElseThrow(() -> new NoSuchElementException("해당 ID를 갖는 멤버가 존재하지 않습니다.")))
+                .adultCount(request.adultCount())
+                .childCount(request.childCount())
+                .infantCount(request.infantCount())
+                .checkInDate(request.startDate())
+                .checkOutDate(request.endDate())
+                .finalPrice(finalPrice)
+                .status(ReservationStatus.PENDING)
+                .build();
+
+        reservationRepositry.save(reservation);
+
+        List<ReservationProduct> reservationProducts = accoProducts.stream()
+                .map(accoProduct -> ReservationProduct.builder()
+                        .reservation(reservation)
+                        .accoProduct(accoProduct)
+                        .build())
+                .toList();
+
+        reservationProductRepository.saveAll(reservationProducts);
+
+        for (AccoProduct accoProduct : accoProducts) {
+            accoProduct.reserve();
+        }
+    }
+
+    // TODO: 일부 검증 로직(isReserved, reserveDate)을 QueryDSL!! 사용해서 처리하도록 변경해보기
+    private void reservationRequestValidate(AccoReservationRequest request, List<AccoProduct> accoProducts) {
+        // 예약하려는 모든 상품이 존재하는지.
+        if (request.products().size() > accoProducts.size())
+            throw new NoSuchElementException("예약하려는 상품 중 존재하지 않는 상품이 있습니다.");
+
+        for (AccoProduct accoProduct : accoProducts) {
+            // 예약하려는 상품이 이미 예약되어 있는건 아닌 지.
+            if (accoProduct.isReserved())
+                throw new IllegalArgumentException("이미 예약된 상품입니다.");
+            //
+            if (accoProduct.getReserveDate().isBefore(request.startDate()) ||
+                    accoProduct.getReserveDate().isAfter(request.endDate().minusDays(1))) {
+                throw new IllegalArgumentException("예약 범위를 벗어난 날짜의 상품입니다.");
+            }
+            if (accoProduct.getAccommodation().getFloorPlan().getMaxGuestCount() < request.adultCount() + request.childCount() ||
+                    accoProduct.getAccommodation().getFloorPlan().getMaxInfantCount() < request.infantCount())
+                throw new IllegalArgumentException("최대 인원 수를 초과하였습니다.");
+        }
+    }
 }
