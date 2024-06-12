@@ -44,6 +44,7 @@ public class AccoProductRepositoryImpl implements AccoProductRepositoryCustom {
         QAccommodation qAccommodation = QAccommodation.accommodation;
 
         return queryFactory.select(Projections.constructor(FilteredAccosResponse.class,
+                        qAccommodation.id,
                         qAccommodation.title,
                         qAccommodation.placeCategory,
                         qAccommodation.floorPlan.maxGuestCount,
@@ -60,6 +61,16 @@ public class AccoProductRepositoryImpl implements AccoProductRepositoryCustom {
                                 valueOf(checkInDate.atStartOfDay()), valueOf(checkOutDate.atStartOfDay()))
                         )
                         .and(qAccoProduct.isReserved.isFalse()))
+                .groupBy(
+                        qAccommodation.id,
+                        qAccommodation.title,
+                        qAccommodation.placeCategory,
+                        qAccommodation.floorPlan.maxGuestCount,
+                        qAccommodation.floorPlan.maxInfantCount,
+                        qAccommodation.floorPlan.bedroomCount,
+                        qAccommodation.floorPlan.bathroomCount,
+                        qAccommodation.location.coordinate
+                )
                 .fetch();
     }
 }
