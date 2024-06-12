@@ -1,8 +1,8 @@
 package codesquad.airdnb.domain.accommodation.service;
 
+import codesquad.airdnb.domain.accommodation.util.GeometryHelper;
 import codesquad.airdnb.domain.accommodation.dto.request.AccoCreateRequest;
-import codesquad.airdnb.domain.accommodation.dto.response.AccoContentResponse;
-import codesquad.airdnb.domain.accommodation.dto.response.AccoListResponse;
+import codesquad.airdnb.domain.accommodation.dto.response.*;
 import codesquad.airdnb.domain.accommodation.entity.AccoAmen;
 import codesquad.airdnb.domain.accommodation.entity.AccoImage;
 import codesquad.airdnb.domain.accommodation.entity.Accommodation;
@@ -15,10 +15,12 @@ import codesquad.airdnb.domain.member.Member;
 import codesquad.airdnb.domain.member.MemberRepository;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.locationtech.jts.geom.Point;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -70,6 +72,15 @@ public class AccoService {
                 .orElseThrow(() -> new NoSuchElementException("해당 ID를 갖는 숙소가 없습니다."));
 
         accoProductRepository.createYearlyProduct(accoId, accommodation.getBasePricePerNight());
+    }
+
+    public List<FilteredAccosResponse> getFilteredList(Integer guestCount, Integer infantCount,
+                                                       LocalDate checkInDate, LocalDate checkOutDate,
+                                                       Double longitude, Double latitude) {
+        GeometryHelper geometryHelper = new GeometryHelper();
+        Point point = geometryHelper.createPoint(longitude, latitude);
+        List<Long> ids = accoRepository.findIdsByCoordAndHumanCount(point, guestCount, infantCount);
+       return accoProductRepository.getAccoListFilteredBy(ids, checkInDate, checkOutDate);
     }
 
     // ****************** Scheduled ******************

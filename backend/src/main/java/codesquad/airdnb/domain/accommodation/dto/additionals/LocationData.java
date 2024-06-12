@@ -4,6 +4,7 @@ import codesquad.airdnb.domain.accommodation.entity.embedded.Location;
 import codesquad.airdnb.domain.accommodation.util.GeometryHelper;
 import jakarta.validation.constraints.*;
 import lombok.Builder;
+import org.locationtech.jts.geom.Point;
 
 @Builder
 public record LocationData (
@@ -27,15 +28,7 @@ public record LocationData (
 
     String postalCode,
 
-    @NotNull
-    @Min(value = -90)
-    @Max(value = 90)
-    Double coordinateX,
-
-    @NotNull
-    @Min(value = -180)
-    @Max(value = 180)
-    Double coordinateY
+    Point point
 ) {
 
     public Location toEmbedded() {
@@ -47,7 +40,7 @@ public record LocationData (
                 .streetAddress(streetAddress)
                 .streetAddressDetail(streetAddressDetail)
                 .postalCode(postalCode)
-                .coordinate(GeometryHelper.createPoint(coordinateX, coordinateY))
+                .coordinate(point)
                 .build();
     }
 
@@ -60,8 +53,9 @@ public record LocationData (
                 .streetAddress(location.getStreetAddress())
                 .streetAddressDetail(location.getStreetAddressDetail())
                 .postalCode(location.getPostalCode())
-                .coordinateX(location.getCoordinate().getX())
-                .coordinateY(location.getCoordinate().getY())
+//                .latitude(location.getCoordinate().getX())
+//                .longitude(location.getCoordinate().getY())
+                .point(location.getCoordinate())
                 .build();
     }
 }
