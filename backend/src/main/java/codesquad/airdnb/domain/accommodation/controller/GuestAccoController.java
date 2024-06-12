@@ -4,10 +4,11 @@ import codesquad.airdnb.domain.accommodation.dto.request.AccoReservationRequest;
 import codesquad.airdnb.domain.accommodation.service.AccoService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @RestController
 @RequestMapping("/api/accommodations")
@@ -17,15 +18,16 @@ public class GuestAccoController {
     private final AccoService accoService;
 
     @GetMapping("/{accoId}")
-    public ResponseEntity<?> getDetailsForReservation(
-            @PathVariable("accoId") Long accoId,
-            @RequestParam("guestCount") Long guestCount,
-            @RequestParam(value = "infantCount", required = false) Long infantCount,
-            @RequestParam("checkInDate") LocalDateTime checkInDate,
-            @RequestParam("checkOutDate") LocalDateTime checkOutDate
-    ) {
-
-        return ResponseEntity.ok("ok");
+    public ResponseEntity<?> getAccoByCondition(
+            @RequestParam("guestCount") Integer guestCount,
+            @RequestParam(value = "infantCount", required = false) Integer infantCount,
+            @RequestParam("checkInDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkInDate,
+            @RequestParam("checkOutDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkOutDate,
+            @RequestParam("longitude") Double longitude,
+            @RequestParam("latitude") Double latitude
+    )
+    {
+        return ResponseEntity.ok(accoService.getFilteredList(guestCount, infantCount, checkInDate, checkOutDate, longitude, latitude));
     }
 
     // TODO: 이후 로그인이 구현되면 토큰 등으로 로그인한 사용자의 정보를 전달받도록 변경
