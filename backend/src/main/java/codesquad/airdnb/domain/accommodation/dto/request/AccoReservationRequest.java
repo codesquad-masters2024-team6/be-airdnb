@@ -1,5 +1,8 @@
 package codesquad.airdnb.domain.accommodation.dto.request;
 
+import codesquad.airdnb.domain.accommodation.entity.Reservation;
+import codesquad.airdnb.domain.accommodation.entity.ReservationStatus;
+import codesquad.airdnb.domain.member.Member;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.Min;
@@ -7,10 +10,12 @@ import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 public record AccoReservationRequest (
 
         @NotNull
+        @Min(value = 1)
         Long accoId,
 
         @NotNull
@@ -32,6 +37,7 @@ public record AccoReservationRequest (
         LocalDate endDate,
 
         @NotNull
+        @Min(value = 2)
         List<Long> products
 ) {
         public AccoReservationRequest {
@@ -43,5 +49,18 @@ public record AccoReservationRequest (
                 if (diff != products.size()) {
                         throw new IllegalArgumentException("예약하려는 날짜와 상품의 개수가 다릅니다.");
                 }
+        }
+
+        public Reservation toReservation(Member member, Long finalPrice) {
+                return Reservation.builder()
+                        .member(member)
+                        .adultCount(adultCount)
+                        .childCount(childCount)
+                        .infantCount(infantCount)
+                        .checkInDate(startDate)
+                        .checkOutDate(endDate)
+                        .finalPrice(finalPrice)
+                        .status(ReservationStatus.PENDING)
+                        .build();
         }
 }
