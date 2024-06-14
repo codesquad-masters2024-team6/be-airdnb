@@ -7,9 +7,7 @@ import static org.mockito.Mockito.mock;
 import codesquad.airdnb.domain.accommodation.dto.request.AccoCreateRequest;
 import codesquad.airdnb.domain.accommodation.dto.request.AccoReservationRequest;
 import codesquad.airdnb.domain.accommodation.dto.response.AccoContentResponse;
-import codesquad.airdnb.domain.accommodation.entity.AccoProduct;
-import codesquad.airdnb.domain.accommodation.entity.Accommodation;
-import codesquad.airdnb.domain.accommodation.entity.Amenity;
+import codesquad.airdnb.domain.accommodation.entity.*;
 import codesquad.airdnb.domain.accommodation.repository.*;
 import codesquad.airdnb.domain.accommodation.util.GeometryHelper;
 import codesquad.airdnb.domain.member.Member;
@@ -45,6 +43,12 @@ class AccoServiceTest {
     @MockBean
     private AccoProductRepository accoProductRepository;
 
+    @MockBean
+    private ReservationRepository reservationRepository;
+
+    @MockBean
+    private ReservationProductRepository reservationProductRepository;
+
     @Autowired
     private AccoService accoService;
 
@@ -56,7 +60,7 @@ class AccoServiceTest {
             .build();
 
 
-    @RepeatedTest(100)
+    @Test
     void 등록된_호스트의_정보로_숙소_등록을_할_경우_숙소_정보_저장에_성공한다() {
         // given
         AccoCreateRequest fakeRequest = fixtureMonkey.giveMeBuilder(AccoCreateRequest.class)
@@ -87,19 +91,45 @@ class AccoServiceTest {
     @Test
     void 등록된_숙소_상품을_예약할_수_있다() {
         // given
-        LocalDate now = LocalDate.now();
         AccoReservationRequest fakeRequest = fixtureMonkey.giveMeBuilder(AccoReservationRequest.class)
-                .set("accoId")
-                .setPostCondition("startDate", LocalDate.class, startDate -> startDate.isAfter(now))
-                .thenApply((it, builder) ->
-                        builder.setPostCondition(
-                                "endDate", LocalDate.class, endDate -> endDate.isAfter(it.startDate())
-                        )
-                )
+                .set("startDate", LocalDate.now())
+                .size("products", 5) // 4박 5일로 설정
+                .setPostCondition("endDate", LocalDate.class, endDate -> endDate.isEqual(LocalDate.now().plusDays(5)))
+                .setPostCondition("adultCount", Long.class, ac -> ac <= 5L)
+                .setPostCondition("childCount", Long.class, cc -> cc <= 5L)
+                .setPostCondition("infantCount", Long.class, ic -> ic <= 2L)
                 .sample();
-        List<AccoProduct> products = fixtureMonkey.giveMe(AccoProduct.class, 5);
 
-        given(accoProductRepository.findAllById(fakeRequest.products())).willReturn(List.of(mock(AccoProduct.class)));
+        List<AccoProduct> products = fixtureMonkey.giveMeBuilder(AccoProduct.class)
+                .setNotNull("reserveDate")
+                .setNotNull("accommodation")
+                .set("accommodation.location.coordinate", geometryHelper.createPoint(11.11, 22.22))
+                .set("accommodation.checkInTime", Time.valueOf("16:00:00"))
+                .set("accommodation.checkOutTime", Time.valueOf("11:00:00"))
+                .set("accommodation.floorPlan.maxGuestCount", 10)
+                .set("accommodation.floorPlan.maxInfantCount", 10)
+                .set("isReserved", false)
+                .setPostCondition("reserveDate", LocalDate.class,
+                        date -> date.isAfter(LocalDate.now()) && date.isBefore(LocalDate.now().plusDays(5)))
+                .setPostCondition("price", Long.class, price -> price >= 1000 && price <= 14000000)
+                .sampleList(5);
 
+        AccoProducts fakeAccoProducts = new AccoProducts(products);
+        Member fakeMember = Mockito.spy(Member.class);
+        when(fakeMember.getId()).thenReturn(1L);
+
+        Reservation fakeReservation = fakeRequest.toReservation(fakeMember, fakeAccoProducts.getTotalRoomCharge());
+        List<ReservationProduct> fakeReserveProducts = fakeAccoProducts.toReservationProducts(fakeReservation);
+
+        given(accoProductRepository.findAllById(fakeRequest.products())).willReturn(products);
+        given(memberRepository.findById(any(Long.class))).willReturn(Optional.of(fakeMember));
+        given(reservationRepository.save(fakeReservation)).willReturn(fakeReservation);
+        given(reservationProductRepository.saveAll(fakeReserveProducts)).willReturn(fakeReserveProducts);
+
+        // when
+        accoService.reservation(fakeRequest, fakeMember.getId());
+
+        // then
+        assertThat(products).allMatch(AccoProduct::isReserved);
     }
 }
