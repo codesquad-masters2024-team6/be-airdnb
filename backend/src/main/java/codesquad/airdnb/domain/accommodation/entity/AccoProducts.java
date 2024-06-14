@@ -14,6 +14,7 @@ public class AccoProducts {
     }
 
     // TODO: 일부 검증 로직(isReserved, reserveDate)을 QueryDSL!! 사용해서 처리하도록 변경해보기
+    // TODO: 같은 상품 여러 개나 날짜 겹치는 케이스 방어 로직 추가(상품의 날짜가 serial하게 있는지 체크)
     public void validate(AccoReservationRequest request) {
         // 예약하려는 모든 상품이 존재하는지.
         if (request.products().size() > accoProducts.size())
