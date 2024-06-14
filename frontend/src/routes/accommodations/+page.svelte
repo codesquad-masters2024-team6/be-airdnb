@@ -1,6 +1,8 @@
 <script>
     import AccoCard from "./AccoCard.svelte";
-        import {onMount} from "svelte";
+    import {onMount} from "svelte";
+    import profile_icon from "$lib/assets/image/profile_icon.svg";
+    import filterBtn from "$lib/assets/image/filterBtnSmall.svg"
 
         onMount(() => {
         const container = document.getElementById('map');
@@ -33,14 +35,44 @@
     })
 </script>
 
-<div class="flex flex-col min-h-screen">
-    <header>
-        <div id="logo" class="w-full flex items-center justify-between p-4 py-6">
+<div class="flex flex-col h-screen">
+    <header class="flex flex-col relative z-20 mb-10">
+        <div id="logo" class="max-w-[1440px] mx-auto w-full flex items-center justify-between p-4 py-6 border-b ">
             <a class="text-2xl font-semibold" href="/hosting">Airdnb</a>
+            <nav class="hidden md:flex items-center gap-[30px] lg:gap-6">
+                <div class="flex gap-4 w-[500px] border-b-airbnb-text-bold h-[50px]">
+                    <div class="flex flex-grow items-center justify-around bg-white border border-[#BDBDBD] rounded-full p-2
+                    hover:shadow duration-100 hover:cursor-pointer">
+                        <div class="flex-grow text-center  border-r border-gray-300">
+                            일정 입력
+                        </div>
+                        <div class="flex-grow text-center  border-r border-gray-300">
+                            금액대 입력
+                        </div>
+                        <div class="flex-grow text-center">
+                            인원 입력
+                        </div>
+                        <div class="mr-3">
+                            <img src="{filterBtn}" alt="filter button" class="w-6 h-6">
+                        </div>
+                    </div>
+                </div>
+            </nav>
+            <div class="border border-gray-300 rounded-full flex gap-2">
+                <button class="hidden md:flex place-items-center m-1 pl-3">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                <button class="md:hidden place-items-center m-1 px-3">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                <button class="hidden md:flex m-0.5">
+                    <img src="{profile_icon}" alt="User Profile Icon">
+                </button>
+            </div>
         </div>
     </header>
-    <section class="flex h-screen">
-        <section class="flex gap-1 w-[720px] flex-wrap overflow-scroll p-2">
+    <section class="max-w-[1440px] mx-auto w-full flex flex-1" style="height: 90vh">
+        <section class="flex gap-1 min-w-[600px] w-[720px] flex-wrap overflow-scroll mx-2">
             <AccoCard/>
             <AccoCard/>
             <AccoCard/>
@@ -49,8 +81,8 @@
             <AccoCard/>
             <AccoCard/>
         </section>
-        <section class="bg-pink-500 w-[720px]">
-            <div id="map" class="w-full h-full"></div>
+        <section>
+            <div id="map" class="w-[720px] h-screen"></div>
             <div id="clickLatlng" class="mt-4"></div>
         </section>
     </section>
