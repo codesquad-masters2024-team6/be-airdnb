@@ -57,10 +57,10 @@ public class AccoService {
     }
 
     public AccoContentResponse get(Long accoId) {
+
         return accoRepository.getAccoContentOf(accoId);
     }
 
-    @Transactional(readOnly = true)
     public AccoListResponse getList(Long hostId) {
         List<Accommodation> accommodations = accoRepository.findAllByHostId(hostId);
 
