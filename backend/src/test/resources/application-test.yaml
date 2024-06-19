@@ -1,8 +1,8 @@
 spring:
   application:
-    name: airdnb
+    name: airdnb-test
   datasource:
-    url: jdbc:mysql://localhost:3306/airdnb
+    url: jdbc:mysql://localhost:3306/airdnb_test
     username: team06
     password: qwer1234
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -14,7 +14,7 @@ spring:
     hibernate:
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
-      ddl-auto: none
+      ddl-auto: create-drop
     properties:
       hibernate:
         show_sql: true

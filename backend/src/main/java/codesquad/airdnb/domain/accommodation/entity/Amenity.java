@@ -1,4 +1,4 @@
-package codesquad.airdnb.domain.accommodation;
+package codesquad.airdnb.domain.accommodation.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -9,18 +9,16 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "ACCO_IMAGE")
-public class AccoImage {
+@NoArgsConstructor
+@Table(name = "AMENITY")
+public class Amenity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID")
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "ACCO_ID")
-    private Accommodation accommodation;
-
-    private String url;
+    @Column(name = "NAME")
+    private String name;
 }
