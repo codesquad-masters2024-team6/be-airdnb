@@ -28,6 +28,7 @@
 		"filepond-plugin-image-exif-orientation": "^1.0.11",
 		"filepond-plugin-image-preview": "^4.6.12",
 		"svelte-filepond": "^0.2.2",
-		"tinro": "^0.6.12"
+		"tinro": "^0.6.12",
+		"axios": "^1.7.2"
 	}
 }
