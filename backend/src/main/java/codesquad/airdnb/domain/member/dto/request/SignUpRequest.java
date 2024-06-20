@@ -1,20 +1,22 @@
-package codesquad.airdnb.domain.member.request;
+package codesquad.airdnb.domain.member.dto.request;
 
 import codesquad.airdnb.domain.member.Member;
 import jakarta.validation.constraints.NotBlank;
-import lombok.Getter;
+import jakarta.validation.constraints.Size;
 
-@Getter
-public class MemberCreateRequest {
+public record SignUpRequest(
+        @NotBlank
+        @Size(min = 4, max = 50)
+        String loginId,
 
-    @NotBlank
-    private String loginId;
+        @NotBlank
+        @Size(min = 4, max = 30)
+        String loginPassword,
 
-    @NotBlank
-    private String loginPassword;
-
-    @NotBlank
-    private String nickname;
+        @NotBlank
+        @Size(min = 4, max = 50)
+        String nickname
+) {
 
     public Member toEntity() {
         return Member.builder()
