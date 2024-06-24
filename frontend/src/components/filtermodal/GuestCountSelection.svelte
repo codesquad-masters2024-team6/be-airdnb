@@ -44,7 +44,7 @@
 
 <div class="absolute right-0 z-[50] top-[4rem] w-[350px] bg-white shadow-2xl rounded-xl" role="menu">
     <div class="popup bg-white p-6 rounded-lg shadow-lg w-full">
-        <div class="space-y-6">
+        <div class="space-y-3">
             <div class="flex justify-between items-center">
                 <div>
                     <div class="font-bold text-gray-800">성인</div>
@@ -57,6 +57,8 @@
                 </div>
             </div>
 
+            <div class="border-b border-b-gray-200" />
+
             <div class="flex justify-between items-center">
                 <div>
                     <div class="font-bold text-gray-800">어린이</div>
@@ -68,6 +70,8 @@
                     <button class="text-gray-600 bg-[#FF5A5F] bg-opacity-50 hover:bg-opacity-80 rounded-full w-8 h-8 flex items-center justify-center" on:click={() => increment('children')}>+</button>
                 </div>
             </div>
+
+            <div class="border-b border-b-gray-200" />
 
             <div class="flex justify-between items-center">
                 <div>

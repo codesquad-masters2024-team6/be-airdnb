@@ -5,31 +5,43 @@
     import ScheduleSelection from "./ScheduleSelection.svelte";
     import filterBtn from "$lib/assets/image/filterBtnSmall.svg"
     import { onMount } from 'svelte';
+    import {filter} from "../../store/Filter.js";
+    import {accoProducts} from "../../store/AccoProducts.js";
 
-    export let checkIn;
-    export let checkOut;
-    export let selectedMinPrice = 100000;
-    export let selectedMaxPrice = 1000000;
-    export let totalGuests = 0;
-    export let state = false;
+    let checkIn;
+    let checkOut;
+    let selectedMinPrice = 100000;
+    let selectedMaxPrice = 1000000;
+    let totalGuests = 0;
+    let latitude = 0;
+    let longitude = 0;
+    let state = false;
+
+    filter.subscribe(value => {
+        checkIn = value.checkInDate;
+        checkOut = value.checkOutDate;
+        totalGuests = value.guestCount;
+        latitude = value.latitude;
+        longitude = value.longitude;
+    })
 
     let dateFormat = 'M월 d일';
-    let onDatePickerPopup = false;
-    let onRatePopup = false;
-    let onGuestPopup = false;
+    let onScheduleSelection = false;
+    let onPriceRangeSelection = false;
+    let onGuestCountSelection = false;
     const dowLabels = ["일", "월", "화", "수", "목", "금", "토"];
     const monthLabels = ["1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월"];
 
-    const toggleDatePicker = () => {
-        onDatePickerPopup = !onDatePickerPopup;
+    const toggleScheduleSelection = () => {
+        onScheduleSelection = !onScheduleSelection;
     };
 
-    const toggleRatePopup = () => {
-        onRatePopup = !onRatePopup;
+    const togglePriceRangeSelection = () => {
+        onPriceRangeSelection = !onPriceRangeSelection;
     };
 
-    const toggleGuestPopup = () => {
-        onGuestPopup = !onGuestPopup;
+    const toggleGuestCountSelection = () => {
+        onGuestCountSelection = !onGuestCountSelection;
     };
 
     const formatDate = (dateString) => (dateString && format(new Date(dateString), dateFormat)) || '';
@@ -48,43 +60,32 @@
     const handleRateSelected = (min, max) => {
         selectedMinPrice = min;
         selectedMaxPrice = max;
-        toggleRatePopup();
+        togglePriceRangeSelection();
     };
 
     const handleGuestsSelected = (total) => {
         totalGuests = total;
-        toggleGuestPopup();
     };
 
     const handleSearch = () => {
-        // 현재 날짜와 1주일 후의 날짜 계산
-        const now = new Date();
-        const defaultCheckInDate = format(now, 'yyyy-MM-dd');
-        const defaultCheckOutDate = format(addDays(now, 7), 'yyyy-MM-dd');
+        filter.updateCheckInCheckOut(checkIn, checkOut);
+        filter.updatePeopleCount(totalGuests);
 
-        // 입력된 값이 없을 때 기본 날짜로 설정
-        const checkInDate = checkIn ? format(new Date(checkIn), 'yyyy-MM-dd') : defaultCheckInDate;
-        const checkOutDate = checkOut ? format(new Date(checkOut), 'yyyy-MM-dd') : defaultCheckOutDate;
-
-        // 체류 기간 계산
-        const length = differenceInDays(new Date(checkOutDate), new Date(checkInDate));
-
-        // URL 생성
-        const url = `/accommodations?checkin=${checkInDate}&checkout=${checkOutDate}&length=${length}&capacity=${totalGuests}&price_min=${selectedMinPrice}&price_max=${selectedMaxPrice}`;
-        window.location.href = url;
+        const queryString = filter.generateFilterQueryString();
+        accoProducts.fetchAccoProducts(queryString);
     };
 </script>
 
 <div class="relative flex justify-center min-w-[700px]">
     <div class="bg-white shadow-md rounded-full flex items-center w-full max-w-lg p-2 border border-gray-300">
-        <button type="button" class="flex-grow px-4 py-2 border-r text-left" on:click={toggleDatePicker}>
+        <button type="button" class="flex-grow px-4 py-2 border-r text-left" on:click={toggleScheduleSelection}>
             <div class="text-sm text-gray-600">{formattedDates}</div>
         </button>
-        <button type="button" class="flex-grow px-4 py-2 border-r text-left" on:click={toggleRatePopup}>
+        <button type="button" class="flex-grow px-4 py-2 border-r text-left" on:click={togglePriceRangeSelection}>
             <div class="text-sm text-gray-600">₩{selectedMinPrice.toLocaleString()} - ₩{selectedMaxPrice.toLocaleString()}</div>
         </button>
         <div class="flex">
-            <button type="button" class="flex-grow px-4 py-2 text-left" on:click={toggleGuestPopup}>
+            <button type="button" class="flex-grow px-4 py-2 text-left" on:click={toggleGuestCountSelection}>
                 <div class="text-sm text-gray-600">게스트 {totalGuests}명</div>
             </button>
             <button class="p-2 focus:outline-none" on:click={handleSearch}>
@@ -93,23 +94,24 @@
         </div>
     </div>
 
-    {#if onDatePickerPopup}
+    {#if onScheduleSelection}
         <ScheduleSelection
                 bind:checkIn={checkIn}
                 bind:checkOut={checkOut}
                 {dowLabels}
                 {monthLabels}
-                {onDatePickerPopup}
                 on:dateSelected={handleDateSelected}
-                on:toggle={toggleDatePicker}
+                on:toggle={toggleScheduleSelection}
         />
     {/if}
 
-    {#if onRatePopup}
-        <PriceRangeSelection bind:selectedMinPrice={selectedMinPrice} bind:selectedMaxPrice={selectedMaxPrice} onClose={handleRateSelected} />
+    {#if onPriceRangeSelection}
+        <PriceRangeSelection bind:selectedMinPrice={selectedMinPrice}
+                             bind:selectedMaxPrice={selectedMaxPrice}
+                             onClose={handleRateSelected} />
     {/if}
 
-    {#if onGuestPopup}
+    {#if onGuestCountSelection}
         <GuestCountSelection bind:total={totalGuests} onClose={handleGuestsSelected} />
     {/if}
 </div>

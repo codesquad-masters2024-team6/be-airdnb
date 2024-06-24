@@ -6,7 +6,6 @@
     export let checkOut;
     export let dowLabels;
     export let monthLabels;
-    export let onDatePickerPopup;
 
     const dispatch = createEventDispatcher();
 
@@ -14,7 +13,7 @@
         const { startDate, endDate } = e.detail;
         checkIn = startDate;
         checkOut = endDate;
-        dispatch('dateSelected', { startDate, endDate });
+        dispatch('dateSelected', { checkIn, checkOut });
     };
 
     const toggleDatePicker = () => {
@@ -22,7 +21,6 @@
     };
 </script>
 
-{#if onDatePickerPopup}
 <div class="absolute bottom-[-5px] left-[2rem]">
     <DatePicker
             theme="custom-datepicker"
@@ -39,7 +37,6 @@
             on:dateSelected={handleDateSelected}
     />
 </div>
-{/if}
 
 <style>
     :global(.datepicker[data-picker-theme="custom-datepicker"]) {

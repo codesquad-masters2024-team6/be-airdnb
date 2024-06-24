@@ -37,8 +37,6 @@
             message += '경도는 ' + latlng.getLng() + ' 입니다';
             let resultDiv = document.getElementById('clickLatlng');
             resultDiv.innerHTML = message;})
-
-        accoProducts.fetchAccoProducts();
     })
 
     $: isLoginBtnClicked = false;
