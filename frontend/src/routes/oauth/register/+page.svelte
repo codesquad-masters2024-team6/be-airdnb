@@ -1,5 +1,5 @@
 <script>
-    import {auth} from "../../../store/auth.js";
+    import {auth} from "../../../store/Auth.js";
     import {goto} from "$app/navigation";
 
     let userData = {
