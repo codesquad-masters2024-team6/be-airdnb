@@ -10,5 +10,5 @@ public interface AccoProductRepositoryCustom {
 
     void createNextProductForAllAcco();
 
-    List<FilteredAccosResponse> getAccoListFilteredBy(List<Long> accoId, LocalDate checkInDate, LocalDate checkOutDate);
+    List<FilteredAccosResponse> getAccoListFilteredBy(List<Long> accoId, LocalDate checkInDate, LocalDate checkOutDate, Integer lowestPrice, Integer highestPrice);
 }

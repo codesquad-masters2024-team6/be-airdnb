@@ -77,12 +77,13 @@ public class AccoService {
 
     public List<FilteredAccosResponse> getFilteredList(Integer guestCount, Integer infantCount,
                                                        LocalDate checkInDate, LocalDate checkOutDate,
-                                                       Double longitude, Double latitude) {
+                                                       Double longitude, Double latitude,
+                                                       Integer lowestPrice, Integer highestPrice) {
         GeometryHelper geometryHelper = new GeometryHelper();
         Point point = geometryHelper.createPoint(longitude, latitude);
         List<Long> ids = accoRepository.findIdsByCoordAndHumanCount(point, guestCount, infantCount);
 
-        return accoProductRepository.getAccoListFilteredBy(ids, checkInDate, checkOutDate);
+        return accoProductRepository.getAccoListFilteredBy(ids, checkInDate, checkOutDate, lowestPrice, highestPrice);
     }
 
     // ****************** Scheduled ******************

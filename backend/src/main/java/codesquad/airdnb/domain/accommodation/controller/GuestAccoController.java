@@ -24,10 +24,12 @@ public class GuestAccoController {
             @RequestParam("checkInDate") LocalDate checkInDate,
             @RequestParam("checkOutDate")  LocalDate checkOutDate,
             @RequestParam("longitude") Double longitude,
-            @RequestParam("latitude") Double latitude
+            @RequestParam("latitude") Double latitude,
+            @RequestParam("lowestPrice") Integer lowestPrice,
+            @RequestParam("highestPrice") Integer highestPrice
     )
     {
-        return ResponseEntity.ok(accoService.getFilteredList(guestCount, infantCount, checkInDate, checkOutDate, longitude, latitude));
+        return ResponseEntity.ok(accoService.getFilteredList(guestCount, infantCount, checkInDate, checkOutDate, longitude, latitude, lowestPrice, highestPrice));
     }
 
     // TODO: 이후 로그인이 구현되면 토큰 등으로 로그인한 사용자의 정보를 전달받도록 변경
