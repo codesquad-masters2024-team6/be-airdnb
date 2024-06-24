@@ -4,6 +4,7 @@ package codesquad.airdnb.domain.member;
 import codesquad.airdnb.domain.member.dto.request.LoginRequest;
 import codesquad.airdnb.domain.member.dto.request.SignUpRequest;
 import codesquad.airdnb.domain.member.dto.response.AuthResponse;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -11,7 +12,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.Map;
 
@@ -24,9 +27,9 @@ public class MemberController {
 
     private final MemberService memberService;
 
-    @PostMapping("/signup")
-    public ResponseEntity<AuthResponse> signUp(@Valid @RequestBody SignUpRequest request) {
-        AuthResponse authResponse = memberService.signUp(request);
+    @PostMapping("/register")
+    public ResponseEntity<AuthResponse> register(@Valid @RequestBody SignUpRequest request) {
+        AuthResponse authResponse = memberService.register(request, LoginType.DEFAULT);
         HttpHeaders headers = createAuthResponseHeader(authResponse.accessToken());
 
         return ResponseEntity
@@ -67,6 +70,31 @@ public class MemberController {
                 .status(HttpStatus.OK)
                 .headers(headers)
                 .body(Collections.singletonMap("accessToken", auth.accessToken()));
+    }
+
+    @GetMapping("/login/oauth/kakao")
+    public ResponseEntity<Void> kakaoLoginRedirection(HttpServletResponse response) throws IOException {
+        String uri = UriComponentsBuilder
+                .fromUriString("https://kauth.kakao.com/oauth/authorize")
+                .queryParam("response_type", "code")
+                .queryParam("client_id", "d10ab92222e4d647141f3f236e610ec9")
+                .queryParam("redirect_uri", "http://localhost:5173/oauth/redirected/kakao")
+                .queryParam("scope", "profile_nickname,profile_image,account_email")
+                .toUriString();
+        response.sendRedirect(uri);
+
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/login/oauth/authenticate")
+    public ResponseEntity<AuthResponse> authenticateOauth(@RequestParam("code") String authCode) {
+        AuthResponse authResponse = memberService.authenticateByKakao(authCode);
+        HttpHeaders headers = createAuthResponseHeader(authResponse.accessToken());
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .headers(headers)
+                .body(authResponse);
     }
 
     private HttpHeaders createAuthResponseHeader(String accessToken) {
