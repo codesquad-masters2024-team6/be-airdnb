@@ -2,12 +2,12 @@
     import AccoCard from "./AccoCard.svelte";
     import {onMount} from "svelte";
     import profile_icon from "$lib/assets/image/profile_icon.svg";
-    import filterBtn from "$lib/assets/image/filterBtnSmall.svg"
-    import {goto} from "$app/navigation";
     import LoginModal from "./LoginModal.svelte";
     import ReservationModal from "./ReservationModal.svelte";
     import ProfilePopup from "../../components/ProfilePopup.svelte";
-    import { isLoggedIn } from "../../store/auth.js";
+    import {isLoggedIn} from "../../store/Auth.js";
+    import {accoProducts} from "../../store/AccoProducts.js";
+    import MiniSearchBar from "../../components/filtermodal/MiniSearchBar.svelte";
 
     onMount(() => {
         const container = document.getElementById('map');
@@ -37,6 +37,8 @@
             message += '경도는 ' + latlng.getLng() + ' 입니다';
             let resultDiv = document.getElementById('clickLatlng');
             resultDiv.innerHTML = message;})
+
+        accoProducts.fetchAccoProducts();
     })
 
     $: isLoginBtnClicked = false;
@@ -49,12 +51,20 @@
         isProfileBtnClicked = !isProfileBtnClicked;
     }
 
-    $: isAccoCardClicked = false;
-    const handleAccoCardClick = () => {
-        isAccoCardClicked = !isAccoCardClicked;
+    $: isReservationModalOpened = false;
+    const handleReservationModalClicked = () => {
+        isReservationModalOpened = !isReservationModalOpened;
     }
 
-    let items = Array.from({ length: 10 });
+    let item = {
+        location: "간단한 지역명 + 숙소 카테고리",
+        title: "숙소 제목",
+        floorPlan: {maxGuestCount: 3, roomCount:1 ,bedCount:1, bathroomCount:1},
+        amenities: ["주방", "무선 인터넷", "에어컨", "헤어드라이어"],
+        pricePerNight: 82953,
+        totalPrice: 1729707,
+    }
+    let items = Array.from({length:10}, ()=>({...item}));
 
 </script>
 
@@ -63,23 +73,7 @@
         <div id="logo" class="max-w-[1440px] mx-auto w-full flex items-center justify-between p-4 py-6 border-b ">
             <a class="text-2xl font-semibold" href="/accommodations">Airdnb</a>
             <nav class="hidden md:flex items-center gap-[30px] lg:gap-6">
-                <div class="flex gap-4 w-[500px] border-b-airbnb-text-bold h-[50px]">
-                    <div class="flex flex-grow items-center justify-around bg-white border border-[#BDBDBD] rounded-full p-2
-                    hover:shadow duration-100 hover:cursor-pointer">
-                        <div class="flex-grow text-center  border-r border-gray-300">
-                            일정 입력
-                        </div>
-                        <div class="flex-grow text-center  border-r border-gray-300">
-                            금액대 입력
-                        </div>
-                        <div class="flex-grow text-center">
-                            인원 입력
-                        </div>
-                        <div class="mr-3">
-                            <img src="{filterBtn}" alt="filter button" class="w-6 h-6">
-                        </div>
-                    </div>
-                </div>
+                <MiniSearchBar/>
             </nav>
             <div class="border border-gray-300 rounded-full flex gap-2 relative">
                 <button class="hidden md:flex place-items-center m-1 pl-3">
@@ -100,7 +94,14 @@
     <section class="max-w-[1440px] mx-auto w-full flex flex-1" style="height: 90vh">
         <section class="flex gap-1 min-w-[600px] w-[720px] flex-wrap overflow-scroll mx-2">
             {#each items as _}
-            <AccoCard/>
+            <AccoCard
+                location={item.location}
+                title={item.title}
+                floorPlan={item.floorPlan}
+                amenities={item.amenities}
+                pricePerNight={item.pricePerNight}
+                totalPrice={item.totalPrice}
+            />
             {/each}
         </section>
         <section>
@@ -111,7 +112,12 @@
     {#if isLoginBtnClicked && !$isLoggedIn}
         <LoginModal bind:isLoginBtnClicked="{isLoginBtnClicked}"/>
     {/if}
-    {#if isAccoCardClicked}
-        <ReservationModal bind:isAccoCardClicked="{isAccoCardClicked}"/>
+    {#if isReservationModalOpened}
+        <ReservationModal
+                checkIn=""
+                checkOut=""
+                totalGuests=""
+                totalPrice=""
+                bind:isAccoCardClicked="{isReservationModalOpened}"/>
     {/if}
 </div>
