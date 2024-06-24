@@ -23,13 +23,13 @@ public class Member {
 
     @NotBlank
     @Length(min = 4, max = 50)
-    @Column(name = "LOGIN_ID")
-    private String loginId;
+    @Column(name = "ACCOUNT_NAME")
+    private String accountName;
 
     @NotBlank
     @Length(min = 4, max = 20)
-    @Column(name = "LOGIN_PASSWORD")
-    private String loginPassword;
+    @Column(name = "PASSWORD")
+    private String password;
 
     @NotBlank
     @Length(min = 1, max = 50)
@@ -52,6 +52,6 @@ public class Member {
     }
 
     public boolean isPasswordInvalid(String passwordInput) {
-        return !loginPassword.equals(passwordInput);
+        return !password.equals(passwordInput);
     }
 }

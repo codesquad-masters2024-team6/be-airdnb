@@ -1,6 +1,11 @@
-package codesquad.airdnb.domain.member.oauth;
+package codesquad.airdnb.domain.member.oauth.kakao;
 
-public class KakaoUserInfoWIthToken implements OAuthUserInfoWithToken{
+import codesquad.airdnb.domain.member.oauth.OAuthProvider;
+import codesquad.airdnb.domain.member.oauth.OAuthToken;
+import codesquad.airdnb.domain.member.oauth.OAuthUserInfo;
+import codesquad.airdnb.domain.member.oauth.OAuthUserInfoWithToken;
+
+public class KakaoUserInfoWIthToken implements OAuthUserInfoWithToken {
     private final OAuthUserInfo userInfo;
     private final String accessToken;
     private final String refreshToken;

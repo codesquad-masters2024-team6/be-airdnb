@@ -8,11 +8,11 @@ import jakarta.validation.constraints.Size;
 public record RegisterRequest(
         @NotBlank
         @Size(min = 4, max = 50)
-        String loginId,
+        String accountName,
 
         @NotBlank
         @Size(min = 4, max = 30)
-        String loginPassword,
+        String password,
 
         @NotBlank
         @Size(min = 1, max = 50)
@@ -21,8 +21,8 @@ public record RegisterRequest(
 
     public Member toEntity() {
         return Member.builder()
-                .loginId(loginId)
-                .loginPassword(loginPassword)
+                .accountName(accountName)
+                .password(password)
                 .nickname(nickname)
                 .loginType(LoginType.DEFAULT)
                 .build();
@@ -30,8 +30,8 @@ public record RegisterRequest(
 
     public Member toEntity(LoginType loginType) {
         return Member.builder()
-                .loginId(loginId)
-                .loginPassword(loginPassword)
+                .accountName(accountName)
+                .password(password)
                 .nickname(nickname)
                 .loginType(loginType)
                 .build();

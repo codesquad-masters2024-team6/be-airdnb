@@ -4,6 +4,7 @@ import codesquad.airdnb.domain.member.dto.request.LoginRequest;
 import codesquad.airdnb.domain.member.dto.request.RegisterRequest;
 import codesquad.airdnb.domain.member.dto.response.AuthResponse;
 import codesquad.airdnb.domain.member.oauth.*;
+import codesquad.airdnb.domain.member.oauth.kakao.KaKaoLoginParam;
 import codesquad.airdnb.global.security.JwtTokenProvider;
 import codesquad.airdnb.global.util.RandomStringUtil;
 import io.jsonwebtoken.Claims;
@@ -29,34 +30,34 @@ public class MemberService {
     private final OAuthRepository oauthRepository;
 
     public AuthResponse register(RegisterRequest request, LoginType loginType) {
-        if(idDuplicatedCheck(request.loginId())){
+        if(idDuplicatedCheck(request.accountName())){
             throw new IllegalArgumentException("이미 존재하는 회원입니다.");
         }
 
         // TODO: 비밀번호 encryption
         Member member = request.toEntity(loginType);
-        String accessToken = jwtTokenProvider.createAccessToken(member.getLoginId());
-        String refreshToken = jwtTokenProvider.createRefreshToken(member.getLoginId());
+        String accessToken = jwtTokenProvider.createAccessToken(member.getAccountName());
+        String refreshToken = jwtTokenProvider.createRefreshToken(member.getAccountName());
         member.updateRefreshToken(refreshToken);
         memberRepository.save(member);
 
         return new AuthResponse(member.getNickname(), accessToken, refreshToken, member.getId());
     }
 
-    public boolean idDuplicatedCheck(String loginId) {
-        return memberRepository.existsMemberByLoginId(loginId);
+    public boolean idDuplicatedCheck(String accountName) {
+        return memberRepository.existsMemberByAccountName(accountName);
     }
 
     public AuthResponse login(LoginRequest request) {
-        Member member = memberRepository.findMemberByLoginId(request.loginId());
-        if(member.isPasswordInvalid(request.loginPassword())){
+        Member member = memberRepository.findMemberByAccountName(request.accountName());
+        if(member.isPasswordInvalid(request.password())){
             throw new IllegalArgumentException();
         }
 
-        String accessToken = jwtTokenProvider.createAccessToken(member.getLoginId());
-        String refreshToken = jwtTokenProvider.createRefreshToken(member.getLoginId());
+        String accessToken = jwtTokenProvider.createAccessToken(member.getAccountName());
+        String refreshToken = jwtTokenProvider.createRefreshToken(member.getAccountName());
         member.updateRefreshToken(refreshToken);
-        memberRepository.updateRefreshToken(member.getLoginId(), refreshToken);
+        memberRepository.updateRefreshToken(member.getAccountName(), refreshToken);
 
         return new AuthResponse(member.getNickname(), accessToken, refreshToken, member.getId());
     }
@@ -64,8 +65,8 @@ public class MemberService {
     @Transactional
     public void logout(String token) {
         Claims claims = jwtTokenProvider.validateToken(token);
-        String loginId = claims.getSubject();
-        Member member = memberRepository.findMemberByLoginId(loginId);
+        String accountName = claims.getSubject();
+        Member member = memberRepository.findMemberByAccountName(accountName);
 
         if (member.getLoginType().equals(LoginType.OAUTH)) {
             // 멤버의 OauthType을 매개로 OAuth
@@ -84,13 +85,13 @@ public class MemberService {
         }
 
         member.expireRefreshToken();
-        memberRepository.updateRefreshToken(member.getLoginId(), member.getRefreshToken());
+        memberRepository.updateRefreshToken(member.getAccountName(), member.getRefreshToken());
     }
   
     public Auth refresh(String token) {
         Claims claims = jwtTokenProvider.validateToken(token);
-        String loginId = claims.getSubject();
-        Member member = memberRepository.findMemberByLoginId(loginId);
+        String accountName = claims.getSubject();
+        Member member = memberRepository.findMemberByAccountName(accountName);
 
         // refresh token 검증
         // TODO: 예외처리 로직 개선
@@ -103,13 +104,13 @@ public class MemberService {
 
 
         // access token 새로 발급
-        String newAccessToken = jwtTokenProvider.createAccessToken(member.getLoginId());
+        String newAccessToken = jwtTokenProvider.createAccessToken(member.getAccountName());
 
         // refresh token도 새로 발급해야 하는지 체크
         if(jwtTokenProvider.refreshTokenExpired(claims)) {
-            refreshToken = jwtTokenProvider.createRefreshToken(member.getLoginId());
+            refreshToken = jwtTokenProvider.createRefreshToken(member.getAccountName());
             member.updateRefreshToken(refreshToken);
-            memberRepository.updateRefreshToken(member.getLoginId(), refreshToken);
+            memberRepository.updateRefreshToken(member.getAccountName(), refreshToken);
         }
 
         return new Auth(newAccessToken, refreshToken);
@@ -120,7 +121,7 @@ public class MemberService {
         OAuthLoginParams oAuthLoginParams = new KaKaoLoginParam(authCode);
         OAuthUserInfoWithToken oAuthUserInfoWithToken = requestOAuthInfoService.requestWithToken(oAuthLoginParams);
 
-        Member member = memberRepository.findMemberByLoginId(oAuthUserInfoWithToken.getEmail());
+        Member member = memberRepository.findMemberByAccountName(oAuthUserInfoWithToken.getEmail());
         if(member == null) {
             // 20자의 난수 비밀번호 생성
             RegisterRequest registerRequest = new RegisterRequest(oAuthUserInfoWithToken.getEmail(), RandomStringUtil.generateRandomPassword(), oAuthUserInfoWithToken.getNickname());
@@ -130,10 +131,10 @@ public class MemberService {
         }
 
         // JWT 저장
-        String accessToken = jwtTokenProvider.createAccessToken(member.getLoginId());
-        String refreshToken = jwtTokenProvider.createRefreshToken(member.getLoginId());
+        String accessToken = jwtTokenProvider.createAccessToken(member.getAccountName());
+        String refreshToken = jwtTokenProvider.createRefreshToken(member.getAccountName());
         member.updateRefreshToken(refreshToken);
-        memberRepository.updateRefreshToken(member.getLoginId(), refreshToken);
+        memberRepository.updateRefreshToken(member.getAccountName(), refreshToken);
 
         // Oauth 토큰 저장
         OAuth oauth = oauthRepository.findOauthByMemberId(member.getId());

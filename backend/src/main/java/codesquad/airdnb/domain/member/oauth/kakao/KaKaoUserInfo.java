@@ -1,5 +1,7 @@
-package codesquad.airdnb.domain.member.oauth;
+package codesquad.airdnb.domain.member.oauth.kakao;
 
+import codesquad.airdnb.domain.member.oauth.OAuthProvider;
+import codesquad.airdnb.domain.member.oauth.OAuthUserInfo;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
@@ -7,7 +9,7 @@ import lombok.Getter;
 
 @Getter
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class KaKaoUserInfo implements OAuthUserInfo{
+public class KaKaoUserInfo implements OAuthUserInfo {
 
     private Long id;
 

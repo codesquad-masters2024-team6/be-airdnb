@@ -1,4 +1,4 @@
-package codesquad.airdnb.domain.member.oauth;
+package codesquad.airdnb.domain.member.oauth.kakao;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;

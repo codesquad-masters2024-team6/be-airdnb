@@ -1,5 +1,6 @@
-package codesquad.airdnb.domain.member.oauth;
+package codesquad.airdnb.domain.member.oauth.kakao;
 
+import codesquad.airdnb.domain.member.oauth.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
@@ -13,17 +14,6 @@ import java.util.Objects;
 @Component
 @RequiredArgsConstructor
 public class KakaoOAuthClient implements OAuthClient {
-    @Value("${oauth.kakao.url.token}")
-    private String TOKEN_URL;
-
-    @Value("${oauth.kakao.url.code}")
-    private String CODE_URL;
-
-    @Value("${oauth.kakao.client-id}")
-    private String CLIENT_ID;
-
-    @Value("${oauth.kakao.client-secret}")
-    private String CLIENT_SECRET;
 
     @Override
     public OAuthProvider oAuthProvider() {
@@ -35,7 +25,7 @@ public class KakaoOAuthClient implements OAuthClient {
         RestTemplate restTemplate = new RestTemplate();
         HttpEntity<MultiValueMap<String, String>> request = generateHttpRequest(params);
 
-        KakaoToken kaKaoToken = restTemplate.exchange("https://kauth.kakao.com/oauth/token", HttpMethod.POST, request, KakaoToken.class).getBody();
+        KakaoToken kaKaoToken = restTemplate.exchange(KakaoConstants.TOKEN_URL, HttpMethod.POST, request, KakaoToken.class).getBody();
 
         Objects.requireNonNull(kaKaoToken);
         return OAuthToken.builder().
@@ -58,7 +48,7 @@ public class KakaoOAuthClient implements OAuthClient {
         body.add("property_keys", "[\"kakao_account.email\", \"kakao_account.profile\"]");
 
         HttpEntity<?> request = new HttpEntity<>(body, httpHeaders);
-        return restTemplate.exchange(CODE_URL, HttpMethod.POST, request, KaKaoUserInfo.class).getBody();
+        return restTemplate.exchange(KakaoConstants.CODE_URL, HttpMethod.POST, request, KaKaoUserInfo.class).getBody();
     }
 
     @Override
@@ -76,7 +66,7 @@ public class KakaoOAuthClient implements OAuthClient {
         headers.set("Authorization", "Bearer " + oauthAccessToken);
         HttpEntity<String> entity = new HttpEntity<>(headers);
 
-        return restTemplate.exchange("https://kapi.kakao.com/v1/user/logout", HttpMethod.POST, entity, String.class);
+        return restTemplate.exchange(KakaoConstants.LOGOUT_URL, HttpMethod.POST, entity, String.class);
     }
 
     private HttpEntity<MultiValueMap<String, String>> generateHttpRequest(OAuthLoginParams params) {
@@ -86,9 +76,9 @@ public class KakaoOAuthClient implements OAuthClient {
         // authorization_code는 params.makeBody() 에서 만들어 온다.
         MultiValueMap<String, String> body = params.makeBody();
         body.add("grant_type", "authorization_code");
-        body.add("client_id", CLIENT_ID);
-        body.add("client_secret", CLIENT_SECRET);
-        body.add("redirect_uri", "http://localhost:5173/oauth/redirected/kakao");
+        body.add("client_id", KakaoConstants.CLIENT_ID);
+        body.add("client_secret", KakaoConstants.CLIENT_SECRET);
+        body.add("redirect_uri", KakaoConstants.REDIRECT_URL);
         return new HttpEntity<>(body, httpHeaders);
     }
 }

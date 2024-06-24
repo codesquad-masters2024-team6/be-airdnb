@@ -4,6 +4,7 @@ package codesquad.airdnb.domain.member;
 import codesquad.airdnb.domain.member.dto.request.LoginRequest;
 import codesquad.airdnb.domain.member.dto.request.RegisterRequest;
 import codesquad.airdnb.domain.member.dto.response.AuthResponse;
+import codesquad.airdnb.domain.member.oauth.kakao.KakaoConstants;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -75,10 +76,10 @@ public class MemberController {
     @GetMapping("/login/oauth/kakao")
     public ResponseEntity<Void> kakaoLoginRedirection(HttpServletResponse response) throws IOException {
         String uri = UriComponentsBuilder
-                .fromUriString("https://kauth.kakao.com/oauth/authorize")
+                .fromUriString(KakaoConstants.AUTH_URL)
                 .queryParam("response_type", "code")
-                .queryParam("client_id", "d10ab92222e4d647141f3f236e610ec9")
-                .queryParam("redirect_uri", "http://localhost:5173/oauth/redirected/kakao")
+                .queryParam("client_id", KakaoConstants.CLIENT_ID)
+                .queryParam("redirect_uri", KakaoConstants.REDIRECT_URL)
                 .queryParam("scope", "profile_nickname,profile_image,account_email")
                 .toUriString();
         response.sendRedirect(uri);
