@@ -76,9 +76,7 @@ public class KakaoOAuthClient implements OAuthClient {
         headers.set("Authorization", "Bearer " + oauthAccessToken);
         HttpEntity<String> entity = new HttpEntity<>(headers);
 
-        ResponseEntity<String> response = restTemplate.exchange("https://kapi.kakao.com/v1/user/logout", HttpMethod.POST, entity, String.class);
-
-        return response;
+        return restTemplate.exchange("https://kapi.kakao.com/v1/user/logout", HttpMethod.POST, entity, String.class);
     }
 
     private HttpEntity<MultiValueMap<String, String>> generateHttpRequest(OAuthLoginParams params) {
@@ -93,6 +91,4 @@ public class KakaoOAuthClient implements OAuthClient {
         body.add("redirect_uri", "http://localhost:5173/oauth/redirected/kakao");
         return new HttpEntity<>(body, httpHeaders);
     }
-
-
 }

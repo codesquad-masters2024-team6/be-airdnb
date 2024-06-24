@@ -2,7 +2,7 @@ package codesquad.airdnb.domain.member;
 
 
 import codesquad.airdnb.domain.member.dto.request.LoginRequest;
-import codesquad.airdnb.domain.member.dto.request.SignUpRequest;
+import codesquad.airdnb.domain.member.dto.request.RegisterRequest;
 import codesquad.airdnb.domain.member.dto.response.AuthResponse;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -28,7 +28,7 @@ public class MemberController {
     private final MemberService memberService;
 
     @PostMapping("/register")
-    public ResponseEntity<AuthResponse> register(@Valid @RequestBody SignUpRequest request) {
+    public ResponseEntity<AuthResponse> register(@Valid @RequestBody RegisterRequest request) {
         AuthResponse authResponse = memberService.register(request, LoginType.DEFAULT);
         HttpHeaders headers = createAuthResponseHeader(authResponse.accessToken());
 

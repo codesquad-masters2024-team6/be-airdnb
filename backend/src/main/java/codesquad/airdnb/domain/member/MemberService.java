@@ -1,7 +1,7 @@
 package codesquad.airdnb.domain.member;
 
 import codesquad.airdnb.domain.member.dto.request.LoginRequest;
-import codesquad.airdnb.domain.member.dto.request.SignUpRequest;
+import codesquad.airdnb.domain.member.dto.request.RegisterRequest;
 import codesquad.airdnb.domain.member.dto.response.AuthResponse;
 import codesquad.airdnb.domain.member.oauth.*;
 import codesquad.airdnb.global.security.JwtTokenProvider;
@@ -28,7 +28,7 @@ public class MemberService {
     // Logout
     private final OAuthRepository oauthRepository;
 
-    public AuthResponse register(SignUpRequest request, LoginType loginType) {
+    public AuthResponse register(RegisterRequest request, LoginType loginType) {
         if(idDuplicatedCheck(request.loginId())){
             throw new IllegalArgumentException("이미 존재하는 회원입니다.");
         }
@@ -75,6 +75,7 @@ public class MemberService {
             // 정상동작 시 Oauth 관련 토큰 제거
             if (response.getStatusCode().is2xxSuccessful()) {
                 oauth.expireAllToken();
+                oauthRepository.save(oauth);
             }
             else {
                 // 로그아웃 api 요청에서 뭔가 문제 발생. 2xx이 아닌 응답이 날아오는 경우.
@@ -122,8 +123,8 @@ public class MemberService {
         Member member = memberRepository.findMemberByLoginId(oAuthUserInfoWithToken.getEmail());
         if(member == null) {
             // 20자의 난수 비밀번호 생성
-            SignUpRequest signUpRequest = new SignUpRequest(oAuthUserInfoWithToken.getEmail(), RandomStringUtil.generateRandomPassword(), oAuthUserInfoWithToken.getNickname());
-            AuthResponse authResponse = register(signUpRequest, LoginType.OAUTH);
+            RegisterRequest registerRequest = new RegisterRequest(oAuthUserInfoWithToken.getEmail(), RandomStringUtil.generateRandomPassword(), oAuthUserInfoWithToken.getNickname());
+            AuthResponse authResponse = register(registerRequest, LoginType.OAUTH);
             member = memberRepository.findById(authResponse.memberId())
                     .orElseThrow(() -> new NoSuchElementException("해당하는 Id를 갖는 회원이 없습니다."));
         }
