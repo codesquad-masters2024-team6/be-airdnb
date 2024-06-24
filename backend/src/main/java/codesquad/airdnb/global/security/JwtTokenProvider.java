@@ -95,6 +95,7 @@ public class JwtTokenProvider {
         return claims.get(keyString, String.class);
     }
 
+
     public Claims validateToken(String token) throws SignatureException {
         if (token == null) {
             throw new IllegalStateException();

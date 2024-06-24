@@ -85,7 +85,7 @@ public class MemberService {
         member.expireRefreshToken();
         memberRepository.updateRefreshToken(member.getLoginId(), member.getRefreshToken());
     }
-
+  
     public Auth refresh(String token) {
         Claims claims = jwtTokenProvider.validateToken(token);
         String loginId = claims.getSubject();
