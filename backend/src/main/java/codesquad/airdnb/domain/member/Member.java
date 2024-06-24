@@ -32,7 +32,7 @@ public class Member {
     private String loginPassword;
 
     @NotBlank
-    @Length(min = 2, max = 50)
+    @Length(min = 1, max = 50)
     @Column(name = "NICKNAME")
     private String nickname;
 
