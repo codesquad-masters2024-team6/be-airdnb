@@ -1,6 +1,6 @@
 import {auth} from "./Auth.js";
 import {get, writable} from "svelte/store";
-import {getApi} from "../service/api.js";
+import {getApi, postApi} from "../service/api.js";
 
 const setAccoProductList = () => {
     let initValue = {
@@ -80,7 +80,29 @@ const setReservation = () => {
     }
 
     const handleReservation = () => {
+        let data = {};
+        subscribe(values => {
+            const {accoId, totalGuests, checkIn, checkOut} = values;
+            data = {
+                accoId: accoId,
+                adultCount: totalGuests,
+                startDate: checkIn,
+                endDate: checkOut,
+            };
+        })
 
+        try{
+            const options = {
+                path: '/guest/accommodations/reserve',
+                data: data,
+                accessToken: get(auth).accessToken
+            }
+            const response = postApi(options);
+            console.log(response);
+        } catch (error) {
+            console.log(error);
+            alert(error.message);
+        }
     }
 
     return {
