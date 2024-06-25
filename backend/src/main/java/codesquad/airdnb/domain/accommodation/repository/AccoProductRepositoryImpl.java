@@ -1,8 +1,7 @@
 package codesquad.airdnb.domain.accommodation.repository;
 
 import codesquad.airdnb.domain.accommodation.dto.response.FilteredAccosResponse;
-import codesquad.airdnb.domain.accommodation.entity.QAccoProduct;
-import codesquad.airdnb.domain.accommodation.entity.QAccommodation;
+import codesquad.airdnb.domain.accommodation.entity.*;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.JPQLQuery;

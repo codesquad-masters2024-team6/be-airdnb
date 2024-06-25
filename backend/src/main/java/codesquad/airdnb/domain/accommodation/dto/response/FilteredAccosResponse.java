@@ -2,6 +2,8 @@ package codesquad.airdnb.domain.accommodation.dto.response;
 
 import org.locationtech.jts.geom.Point;
 
+import java.util.List;
+
 public record FilteredAccosResponse(
         Long accoId,
         String title,
@@ -11,6 +13,8 @@ public record FilteredAccosResponse(
         Integer bedroomCount,
         Integer bathroomCount,
         Point coordinate,
-        Long totalPrice
+        Long totalPrice,
+        List<String> amenities,
+        List<String> imageUrls
 ) {
 }

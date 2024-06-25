@@ -96,7 +96,9 @@ public class AccoService {
 
     @Transactional
     public void reservation(AccoReservationRequest request, Long memberId) {
-        AccoProducts accoProducts = new AccoProducts(accoProductRepository.findAllById(request.products()));
+        AccoProducts accoProducts =
+                new AccoProducts(accoProductRepository.findByAccommodation_IdAndReserveDateBetweenAndIsReservedFalse(
+                        request.accoId(), request.startDate(), request.endDate().minusDays(1)));
         accoProducts.validate(request);
 
         Member member = memberRepository.findById(memberId)
