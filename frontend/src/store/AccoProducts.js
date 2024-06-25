@@ -6,7 +6,6 @@ const setAccoProductList = () => {
     let initValue = {
         loginId: get(auth).loginId,
         accoProductList: [],
-        reservationModal: '', // 예약 팝업이 열려있는지 체크하는 필드
     }
 
     const {subscribe, update, set} = writable({...initValue});
@@ -53,7 +52,48 @@ const setAccoProductList = () => {
     }
 }
 
+const setReservation = () => {
+    let initValue = {
+        loginId: get(auth).loginId,
+        title: '',
+        accoId: '',
+        checkIn: '',
+        checkOut: '',
+        totalGuests: 0,
+        totalPrice: 0,
+        reservationModal: '', // 예약 팝업이 열려있는지 체크하는 필드
+    }
+    const { subscribe, set, update } = writable({ ...initValue });
+
+    const updateReservationModal = (options) => {
+        update(data => {
+            data.title = options.title;
+            data.accoId = options.accoId;
+            data.checkIn = options.checkIn;
+            data.checkOut = options.checkOut;
+            data.totalGuests = options.totalGuests;
+            data.totalPrice = options.totalPrice;
+
+            console.log(data);
+            return data;
+        })
+    }
+
+    const handleReservation = () => {
+
+    }
+
+    return {
+        subscribe,
+        set,
+        update,
+        handleReservation,
+        updateReservationModal,
+    };
+}
+
 export const accoProducts = setAccoProductList();
+export const reservation = setReservation();
 
 //[
 //     {

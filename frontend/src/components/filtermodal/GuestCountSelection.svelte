@@ -1,12 +1,19 @@
 <script>
     import { onMount, onDestroy } from 'svelte';
+    import {filter} from "../../store/Filter.js";
 
     export let total = 0;
     export let onClose;
 
-    let adults = 2;
+    let adults = 1;
     let children = 0;
+    filter.subscribe(value => {
+        total = value.guestCount;
+    })
+
     let infants = 0;
+
+    $: total;
 
     const updateTotal = () => {
         total = adults + children + infants;

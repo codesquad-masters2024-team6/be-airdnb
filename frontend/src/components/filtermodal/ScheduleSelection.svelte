@@ -1,27 +1,44 @@
 <script>
     import { DatePicker } from '@svelte-plugins/datepicker';
-    import { createEventDispatcher } from 'svelte';
+    import {createEventDispatcher, onDestroy, onMount} from 'svelte';
+    import {filter} from "../../store/Filter.js";
 
     export let checkIn;
     export let checkOut;
     export let dowLabels;
     export let monthLabels;
+    export let onClose;
 
-    const dispatch = createEventDispatcher();
+    filter.subscribe(value => {
+        checkIn = value.checkInDate;
+        checkOut = value.checkOutDate;
+    })
 
-    const handleDateSelected = (e) => {
-        const { startDate, endDate } = e.detail;
-        checkIn = startDate;
-        checkOut = endDate;
-        dispatch('dateSelected', { checkIn, checkOut });
+    $: checkIn;
+    $: checkOut;
+
+    const updateSchedule = () => {
+        filter.updateCheckInCheckOut(checkIn, checkOut);
+        console.log($filter.checkInDate, $filter.checkOutDate);
     };
 
-    const toggleDatePicker = () => {
-        dispatch('toggle');
+    const handleClickOutside = (event) => {
+        if (!event.target.closest('.popup')) {
+            updateSchedule();
+            onClose();
+        }
     };
+
+    onMount(() => {
+        document.addEventListener('mousedown', handleClickOutside);
+    });
+
+    onDestroy(() => {
+        document.removeEventListener('mousedown', handleClickOutside);
+    });
 </script>
 
-<div class="absolute bottom-[-5px] left-[2rem]">
+<div class="absolute bottom-[-5px] left-[2rem] popup">
     <DatePicker
             theme="custom-datepicker"
             isOpen={true}
@@ -34,7 +51,7 @@
             enableFutureDates={true}
             enablePastDates={false}
             showYearControls={false}
-            on:dateSelected={handleDateSelected}
+            on:dateSelected={updateSchedule}
     />
 </div>
 

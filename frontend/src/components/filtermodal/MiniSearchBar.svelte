@@ -12,7 +12,7 @@
     let checkOut;
     let selectedMinPrice = 100000;
     let selectedMaxPrice = 1000000;
-    let totalGuests = 0;
+    let totalGuests;
     let latitude = 0;
     let longitude = 0;
     let state = false;
@@ -24,6 +24,8 @@
         latitude = value.latitude;
         longitude = value.longitude;
     })
+
+    $: totalGuests;
 
     let dateFormat = 'M월 d일';
     let onScheduleSelection = false;
@@ -50,11 +52,8 @@
     $: formattedCheckOut = formatDate(checkOut);
     $: formattedDates = state ? '언제든지' : (formattedCheckIn && formattedCheckOut ? `${formattedCheckIn} - ${formattedCheckOut}` : '일정 입력');
 
-    const handleDateSelected = (e) => {
-        const { startDate, endDate } = e.detail;
-        checkIn = startDate;
-        checkOut = endDate;
-        toggleDatePicker();
+    const handleDateSelected = () => {
+        toggleScheduleSelection();
     };
 
     const handleRateSelected = (min, max) => {
@@ -63,14 +62,13 @@
         togglePriceRangeSelection();
     };
 
-    const handleGuestsSelected = (total) => {
-        totalGuests = total;
+    const handleGuestsSelected = () => {
+        toggleGuestCountSelection();
     };
 
     const handleSearch = () => {
         filter.updateCheckInCheckOut(checkIn, checkOut);
         filter.updatePeopleCount(totalGuests);
-
         const queryString = filter.generateFilterQueryString();
         accoProducts.fetchAccoProducts(queryString);
     };
@@ -101,7 +99,7 @@
                 {dowLabels}
                 {monthLabels}
                 on:dateSelected={handleDateSelected}
-                on:toggle={toggleScheduleSelection}
+                onClose={toggleScheduleSelection}
         />
     {/if}
 
@@ -112,7 +110,8 @@
     {/if}
 
     {#if onGuestCountSelection}
-        <GuestCountSelection bind:total={totalGuests} onClose={handleGuestsSelected} />
+        <GuestCountSelection bind:total={totalGuests}
+                             onClose={handleGuestsSelected} />
     {/if}
 </div>
 
