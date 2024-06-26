@@ -10,6 +10,8 @@ import codesquad.airdnb.domain.accommodation.dto.response.AccoContentResponse;
 import codesquad.airdnb.domain.accommodation.dto.response.AccoListResponse;
 import codesquad.airdnb.domain.member.Member;
 import codesquad.airdnb.domain.member.MemberRepository;
+import codesquad.airdnb.global.security.JwtTokenProvider;
+import io.jsonwebtoken.Claims;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.locationtech.jts.geom.Point;
@@ -27,8 +29,6 @@ public class AccoService {
 
     private final AccoRepository accoRepository;
 
-    private final AccoImageRepository accoImageRepository;
-
     private final AmenityRepository amenityRepository;
 
     private final MemberRepository memberRepository;
@@ -38,6 +38,8 @@ public class AccoService {
     private final ReservationRepository reservationRepository;
 
     private final ReservationProductRepository reservationProductRepository;
+
+    private final JwtTokenProvider jwtTokenProvider;
 
     @Transactional
     public AccoContentResponse create(@Valid AccoCreateRequest request) {
@@ -62,8 +64,11 @@ public class AccoService {
         return accoRepository.getAccoContentOf(accoId);
     }
 
-    public AccoListResponse getList(Long hostId) {
-        List<Accommodation> accommodations = accoRepository.findAllByHostId(hostId);
+    public AccoListResponse getList(String authHeader) {
+        String token = jwtTokenProvider.getToken(authHeader);
+        Claims claims = jwtTokenProvider.validateToken(token);
+        String accountName = claims.getSubject();
+        List<Accommodation> accommodations = accoRepository.findAllByHostAccountName(accountName);
 
         return AccoListResponse.of(accommodations);
     }
@@ -95,14 +100,19 @@ public class AccoService {
     // **************** Scheduled_END ****************
 
     @Transactional
-    public void reservation(AccoReservationRequest request, Long memberId) {
+    public void reservation(AccoReservationRequest request, String authHeader) {
+        String token = jwtTokenProvider.getToken(authHeader);
+        Claims claims = jwtTokenProvider.validateToken(token);
+        String accountName = claims.getSubject();
+
+        Member member = memberRepository.findMemberByAccountName(accountName)
+                .orElseThrow(() -> new NoSuchElementException("해당 회원이 존재하지 않습니다."));
+
         AccoProducts accoProducts =
                 new AccoProducts(accoProductRepository.findByAccommodation_IdAndReserveDateBetweenAndIsReservedFalse(
                         request.accoId(), request.startDate(), request.endDate().minusDays(1)));
         accoProducts.validate(request);
 
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new NoSuchElementException("해당 ID를 갖는 멤버가 존재하지 않습니다."));
 
         Reservation reservation = request.toReservation(member, accoProducts.getTotalRoomCharge());
         reservationRepository.save(reservation);

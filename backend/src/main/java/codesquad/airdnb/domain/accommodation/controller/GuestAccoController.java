@@ -35,8 +35,8 @@ public class GuestAccoController {
     // TODO: 이후 로그인이 구현되면 토큰 등으로 로그인한 사용자의 정보를 전달받도록 변경
     @PostMapping("/reserve")
     public ResponseEntity<Void> reservation(@Valid @RequestBody AccoReservationRequest request,
-                                            @RequestParam Long memberId) {
-        accoService.reservation(request, memberId);
+                                            @RequestHeader("Authorization") String authHeader) {
+        accoService.reservation(request, authHeader);
 
         return ResponseEntity.ok().build();
     }
