@@ -65,10 +65,7 @@ public class MemberService {
 
     @Transactional
     public void logout(String authHeader) {
-        String token = jwtTokenProvider.getToken(authHeader);
-        System.out.println("================\n\n\n token = \n\n\n===============" + token);
-        Claims claims = jwtTokenProvider.validateToken(token);
-        String accountName = claims.getSubject();
+        String accountName = jwtTokenProvider.getSubjectFromAuthHeader(authHeader);
         Member member = memberRepository.findMemberByAccountName(accountName)
                 .orElseThrow(() -> new NoSuchElementException("해당 회원이 존재하지 않습니다."));
 

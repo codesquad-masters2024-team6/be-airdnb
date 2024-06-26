@@ -68,9 +68,7 @@ public class AccoService {
 
     @Transactional
     public AccoListResponse getList(String authHeader) {
-        String token = jwtTokenProvider.getToken(authHeader);
-        Claims claims = jwtTokenProvider.validateToken(token);
-        String accountName = claims.getSubject();
+        String accountName = jwtTokenProvider.getSubjectFromAuthHeader(authHeader);
         List<Accommodation> accommodations = accoRepository.findAllByHostAccountName(accountName);
 
         return AccoListResponse.of(accommodations);
@@ -116,9 +114,7 @@ public class AccoService {
     @Transactional
     public void reservation(AccoReservationRequest request, String authHeader) {
         // 회원확인
-        String token = jwtTokenProvider.getToken(authHeader);
-        Claims claims = jwtTokenProvider.validateToken(token);
-        String accountName = claims.getSubject();
+        String accountName = jwtTokenProvider.getSubjectFromAuthHeader(authHeader);
 
         Member member = memberRepository.findMemberByAccountName(accountName)
                 .orElseThrow(() -> new NoSuchElementException("해당 회원이 존재하지 않습니다."));
