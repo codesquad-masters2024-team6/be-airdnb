@@ -1,8 +1,12 @@
 package codesquad.airdnb.domain.accommodation.repository;
 
+import codesquad.airdnb.domain.accommodation.dto.additionals.FilteredAcco;
 import codesquad.airdnb.domain.accommodation.dto.response.FilteredAccosResponse;
 import codesquad.airdnb.domain.accommodation.entity.*;
+import com.querydsl.core.group.GroupBy;
+import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -17,6 +21,9 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static com.querydsl.core.group.GroupBy.groupBy;
+import static com.querydsl.core.group.GroupBy.list;
 
 @Repository
 @RequiredArgsConstructor
@@ -42,13 +49,13 @@ public class AccoProductRepositoryImpl implements AccoProductRepositoryCustom {
 
 
     @Override
-    public List<FilteredAccosResponse> getAccoListFilteredBy(List<Long> accoIds, LocalDate checkInDate, LocalDate checkOutDate, Integer lowestPrice, Integer highestPrice) {
+    public List<FilteredAcco> getAccoListFilteredBy(List<Long> accoIds, LocalDate checkInDate, LocalDate checkOutDate, Integer lowestPrice, Integer highestPrice) {
         QAccoProduct qAccoProduct = QAccoProduct.accoProduct;
         QAccommodation qAccommodation = QAccommodation.accommodation;
 
         long daysBetween = ChronoUnit.DAYS.between(checkInDate, checkOutDate);
 
-        return queryFactory.select(Projections.constructor(FilteredAccosResponse.class,
+        return queryFactory.select(Projections.constructor(FilteredAcco.class,
                         qAccommodation.id,
                         qAccommodation.title,
                         qAccommodation.placeCategory,

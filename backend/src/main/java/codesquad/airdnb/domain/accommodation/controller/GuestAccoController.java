@@ -32,7 +32,6 @@ public class GuestAccoController {
         return ResponseEntity.ok(accoService.getFilteredList(guestCount, infantCount, checkInDate, checkOutDate, longitude, latitude, lowestPrice, highestPrice));
     }
 
-    // TODO: 이후 로그인이 구현되면 토큰 등으로 로그인한 사용자의 정보를 전달받도록 변경
     @PostMapping("/reserve")
     public ResponseEntity<Void> reservation(@Valid @RequestBody AccoReservationRequest request,
                                             @RequestHeader("Authorization") String authHeader) {

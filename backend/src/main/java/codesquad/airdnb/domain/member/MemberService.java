@@ -128,7 +128,7 @@ public class MemberService {
 
         Member member = memberRepository.findMemberByAccountName(oAuthUserInfoWithToken.getEmail())
                 .orElseGet(() -> {
-                    // 20자의 난수 비밀번호 생성
+                    // 회원 등록
                     RegisterRequest registerRequest = new RegisterRequest(oAuthUserInfoWithToken.getEmail(), RandomStringUtil.generateRandomPassword(), oAuthUserInfoWithToken.getNickname());
                     AuthResponse authResponse = register(registerRequest, LoginType.OAUTH);
                     return memberRepository.findById(authResponse.memberId())

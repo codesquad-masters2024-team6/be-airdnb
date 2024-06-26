@@ -21,7 +21,7 @@ public class AccoProducts {
 //        if (request.products().size() > accoProducts.size())
 //            throw new NoSuchElementException("예약하려는 상품 중 존재하지 않는 상품이 있습니다.");
         if (ChronoUnit.DAYS.between(request.startDate(), request.endDate()) != accoProducts.size()) {
-            throw new IllegalArgumentException("예약 가능한 숙소의 수가 충분하지 않습니다.");
+            throw new IllegalArgumentException("해당 날짜에 예약이 불가능한 숙소입니다.");
         }
 
         for (AccoProduct accoProduct : accoProducts) {
