@@ -6,7 +6,7 @@ import codesquad.airdnb.domain.member.dto.response.AuthResponse;
 import codesquad.airdnb.domain.member.oauth.*;
 import codesquad.airdnb.domain.member.oauth.kakao.KaKaoLoginParam;
 import codesquad.airdnb.global.security.JwtTokenProvider;
-import codesquad.airdnb.global.util.RandomStringUtil;
+import codesquad.airdnb.domain.member.util.RandomStringUtil;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -101,7 +101,7 @@ public class MemberService {
         // refresh token 검증
         // TODO: 예외처리 로직 개선
         String refreshToken = member.getRefreshToken();
-        if(refreshToken == null || !refreshToken.equals(token)) {
+        if(!refreshToken.equals(token)) {
             throw new RuntimeException();
         }
 
