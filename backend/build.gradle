@@ -22,6 +22,7 @@ repositories {
 	mavenCentral()
 }
 
+
 ext {
 	snippetsDir = file("build/generated-snippets")
 }
