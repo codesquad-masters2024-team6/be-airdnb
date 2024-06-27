@@ -21,17 +21,3 @@ spring:
         format_sql: true
     database-platform: org.hibernate.dialect.MySQLDialect
     open-in-view: false
-
-jwt:
-  secret-key: "b583de2c611c2987e9693e774d71bc75665b6a92a0f126c9a25e3152f09b6057"
-
-oauth:
-  kakao:
-    client-secret: "L5ibbnaqdwP2p7seSk0ahDjk6mcmX1rh"
-    client-id: "d10ab92222e4d647141f3f236e610ec9"
-    url:
-      auth: "https://kauth.kakao.com/oauth/authorize"
-      token: "https://kauth.kakao.com/oauth/token"
-      code: "https://kapi.kakao.com/v2/user/me"
-      logout: "https://kapi.kakao.com/v1/user/logout"
-      redirect: "http://localhost:5173/oauth/redirected/kakao"
